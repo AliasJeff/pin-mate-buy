@@ -1,0 +1,5 @@
+spring:
+  config:
+    name: pin-mate-buy-app
+  profiles:
+    active: dev
