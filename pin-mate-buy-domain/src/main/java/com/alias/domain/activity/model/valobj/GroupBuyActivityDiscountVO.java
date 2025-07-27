@@ -1,5 +1,6 @@
 package com.alias.domain.activity.model.valobj;
 
+import com.alias.domain.activity.model.enums.DiscountTypeEnum;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -95,7 +96,7 @@ public class GroupBuyActivityDiscountVO {
         /**
          * 折扣类型（0:base、1:tag）
          */
-        private Byte discountType;
+        private DiscountTypeEnum discountType;
 
         /**
          * 营销优惠计划（ZJ:直减、MJ:满减、N元购）

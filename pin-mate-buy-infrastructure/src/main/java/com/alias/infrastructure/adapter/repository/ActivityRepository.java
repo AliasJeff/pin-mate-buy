@@ -1,6 +1,7 @@
 package com.alias.infrastructure.adapter.repository;
 
 import com.alias.domain.activity.adapter.repository.IActivityRepository;
+import com.alias.domain.activity.model.enums.DiscountTypeEnum;
 import com.alias.domain.activity.model.valobj.GroupBuyActivityDiscountVO;
 import com.alias.domain.activity.model.valobj.SkuVO;
 import com.alias.infrastructure.dao.IGroupBuyActivityDao;
@@ -38,7 +39,7 @@ public class ActivityRepository implements IActivityRepository {
         GroupBuyActivityDiscountVO.GroupBuyDiscount groupBuyDiscount = GroupBuyActivityDiscountVO.GroupBuyDiscount.builder()
                 .discountName(groupBuyDiscountRes.getDiscountName())
                 .discountDesc(groupBuyDiscountRes.getDiscountDesc())
-                .discountType(groupBuyDiscountRes.getDiscountType())
+                .discountType(DiscountTypeEnum.get(groupBuyDiscountRes.getDiscountType()))
                 .marketPlan(groupBuyDiscountRes.getMarketPlan())
                 .marketExpr(groupBuyDiscountRes.getMarketExpr())
                 .tagId(groupBuyDiscountRes.getTagId())
