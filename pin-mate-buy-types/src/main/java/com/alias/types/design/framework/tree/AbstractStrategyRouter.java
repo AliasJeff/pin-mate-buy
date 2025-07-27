@@ -1,4 +1,26 @@
 package com.alias.types.design.framework.tree;
 
-public class AbstractStrategyRouter {
+import lombok.Getter;
+import lombok.Setter;
+
+/**
+ * 策略路由抽象类
+ *
+ * @param <T>
+ * @param <D>
+ * @param <R>
+ */
+public abstract class AbstractStrategyRouter<T, D, R> implements StrategyMapper<T, D, R>, StrategyHandler<T, D, R> {
+
+    @Getter
+    @Setter
+    protected StrategyHandler<T, D, R> defaultStrategyHandler = StrategyHandler.DEFAULT;
+
+    public R router(T requestParameters, D dynamicContext) throws Exception {
+        StrategyHandler<T, D, R> strategyHandler = get(requestParameters, dynamicContext);
+        if (strategyHandler != null) {
+            return strategyHandler.apply(requestParameters, dynamicContext);
+        }
+        return defaultStrategyHandler.apply(requestParameters, dynamicContext);
+    }
 }

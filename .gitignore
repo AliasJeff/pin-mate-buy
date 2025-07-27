@@ -11,6 +11,13 @@ target/
 *.iws
 *.iml
 *.ipr
+/.idea/
+/.idea/*
+/data/
+/data/*
+/pin-mate-buy-app/data/
+/pin-mate-buy-app/data/*
+
 
 ### Eclipse ###
 .apt_generated

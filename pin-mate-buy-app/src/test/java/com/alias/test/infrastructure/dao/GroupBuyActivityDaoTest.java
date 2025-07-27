@@ -1,7 +1,7 @@
-package cn.bugstack.test.infrastructure.dao;
+package com.alias.test.infrastructure.dao;
 
-import cn.bugstack.infrastructure.dao.IGroupBuyActivityDao;
-import cn.bugstack.infrastructure.dao.po.GroupBuyActivity;
+import com.alias.infrastructure.dao.IGroupBuyActivityDao;
+import com.alias.infrastructure.dao.po.GroupBuyActivity;
 import com.alibaba.fastjson.JSON;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
