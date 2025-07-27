@@ -92,6 +92,33 @@ VALUES
 UNLOCK TABLES;
 
 
+# 转储表 sku
+# ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `sku`;
+
+CREATE TABLE `sku` (
+                       `id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '自增ID',
+                       `source` varchar(8) NOT NULL COMMENT '渠道',
+                       `channel` varchar(8) NOT NULL COMMENT '来源',
+                       `goods_id` varchar(16) NOT NULL COMMENT '商品ID',
+                       `goods_name` varchar(128) NOT NULL COMMENT '商品名称',
+                       `original_price` decimal(10,2) NOT NULL COMMENT '商品价格',
+                       `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+                       `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+                       PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='商品信息';
+
+LOCK TABLES `sku` WRITE;
+/*!40000 ALTER TABLE `sku` DISABLE KEYS */;
+
+INSERT INTO `sku` (`id`, `source`, `channel`, `goods_id`, `goods_name`, `original_price`, `create_time`, `update_time`)
+VALUES
+    (1,'s01','c01','9890001','《并发编程的艺术》',100.00,'2024-12-21 11:10:06','2024-12-21 11:10:06');
+
+/*!40000 ALTER TABLE `sku` ENABLE KEYS */;
+UNLOCK TABLES;
+
 
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
