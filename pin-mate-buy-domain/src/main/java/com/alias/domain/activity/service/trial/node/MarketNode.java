@@ -35,11 +35,16 @@ public class MarketNode extends AbstractGroupBuyMarketSupport<MarketProductEntit
     private EndNode endNode;
 
     @Resource
+    private ErrorNode errorNode;
+
+    @Resource
     private Map<String, IDiscountCalculateService> discountCalculateServiceMap;
+
 
     @Override
     protected void multiThread(MarketProductEntity marketProductEntity, DefaultActivityStrategyFactory.DynamicContext dynamicContext) throws ExecutionException, InterruptedException, TimeoutException {
-        QueryGroupBuyActivityDiscountVOThreadTask queryGroupBuyActivityDiscountVOThreadTask = new QueryGroupBuyActivityDiscountVOThreadTask(marketProductEntity.getSource(), marketProductEntity.getChannel(), repository);
+        // 异步查询活动配置
+        QueryGroupBuyActivityDiscountVOThreadTask queryGroupBuyActivityDiscountVOThreadTask = new QueryGroupBuyActivityDiscountVOThreadTask(marketProductEntity.getSource(), marketProductEntity.getChannel(), marketProductEntity.getGoodsId(), repository);
         FutureTask<GroupBuyActivityDiscountVO> groupBuyActivityDiscountVOFutureTask = new FutureTask<>(queryGroupBuyActivityDiscountVOThreadTask);
         threadPoolExecutor.execute(groupBuyActivityDiscountVOFutureTask);
 
@@ -57,9 +62,19 @@ public class MarketNode extends AbstractGroupBuyMarketSupport<MarketProductEntit
     protected TrialBalanceEntity doApply(MarketProductEntity requestParameters, DefaultActivityStrategyFactory.DynamicContext dynamicContext) throws Exception {
         log.info("拼团商品查询试算服务-MarketNode userId:{} requestParameter:{}", requestParameters.getUserId(), JSON.toJSONString(requestParameters));
 
+        // 获取上下文数据
         GroupBuyActivityDiscountVO groupBuyActivityDiscountVO = dynamicContext.getGroupBuyActivityDiscountVO();
-        SkuVO skuVO = dynamicContext.getSkuVO();
+        if (null == groupBuyActivityDiscountVO) {
+            return router(requestParameters, dynamicContext);
+        }
 
+        GroupBuyActivityDiscountVO.GroupBuyDiscount groupBuyDiscount = groupBuyActivityDiscountVO.getGroupBuyDiscount();
+        SkuVO skuVO = dynamicContext.getSkuVO();
+        if (null == groupBuyDiscount || null == skuVO) {
+            return router(requestParameters, dynamicContext);
+        }
+
+        // 优惠试算
         IDiscountCalculateService discountCalculateService = discountCalculateServiceMap.get(groupBuyActivityDiscountVO.getGroupBuyDiscount().getMarketPlan());
         if (null == discountCalculateService) {
             throw new AppException(ResponseCode.E0001.getCode(), ResponseCode.E0001.getInfo());
@@ -67,12 +82,17 @@ public class MarketNode extends AbstractGroupBuyMarketSupport<MarketProductEntit
 
         BigDecimal deductionPrice = discountCalculateService.calculate(requestParameters.getUserId(), skuVO.getOriginalPrice(), groupBuyActivityDiscountVO.getGroupBuyDiscount());
         dynamicContext.setDeductionPrice(deductionPrice);
-        
+
         return router(requestParameters, dynamicContext);
     }
 
     @Override
     public StrategyHandler<MarketProductEntity, DefaultActivityStrategyFactory.DynamicContext, TrialBalanceEntity> get(MarketProductEntity requestParameters, DefaultActivityStrategyFactory.DynamicContext dynamicContext) throws Exception {
+        // 不存在配置的拼团活动，走异常节点
+        if (null == dynamicContext.getGroupBuyActivityDiscountVO() || null == dynamicContext.getSkuVO() || null == dynamicContext.getDeductionPrice()) {
+            return errorNode;
+        }
+
         return endNode;
     }
 }
