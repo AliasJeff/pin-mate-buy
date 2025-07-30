@@ -1,12 +1,16 @@
 package com.alias.domain.activity.model.valobj;
 
 import com.alias.domain.activity.model.enums.DiscountTypeEnum;
+import com.alias.domain.activity.model.enums.TagScopeEnum;
+import com.alias.types.common.Constants;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.Date;
+import java.util.Objects;
 
 /**
  * 拼团活动营销配置值对象
@@ -77,6 +81,38 @@ public class GroupBuyActivityDiscountVO {
      * 人群标签规则范围
      */
     private String tagScope;
+
+    /**
+     * 可见限制
+     * 只要存在这样一个值，那么首次获得的默认值就是 false
+     */
+    public boolean isVisible() {
+        if (StringUtils.isBlank(this.tagScope)) {
+            return TagScopeEnum.VISIBLE.getAllow();
+        }
+
+        String[] split = this.tagScope.split(Constants.SPLIT);
+        if (split.length > 0 && Objects.equals(split[0], "1") && StringUtils.isNotBlank(split[0])) {
+            return TagScopeEnum.VISIBLE.getRefuse();
+        }
+        return TagScopeEnum.VISIBLE.getAllow();
+    }
+
+    /**
+     * 参与限制
+     * 只要存在这样一个值，那么首次获得的默认值就是 false
+     */
+    public boolean isEnable() {
+        if (StringUtils.isBlank(this.tagScope)) {
+            return TagScopeEnum.ENABLE.getAllow();
+        }
+        String[] split = this.tagScope.split(Constants.SPLIT);
+        if (split.length > 1 && Objects.equals(split[1], "2") && StringUtils.isNotBlank(split[1])) {
+            return TagScopeEnum.ENABLE.getRefuse();
+        }
+        return TagScopeEnum.ENABLE.getAllow();
+
+    }
 
     @Getter
     @Builder

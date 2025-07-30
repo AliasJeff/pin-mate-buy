@@ -12,5 +12,7 @@ public interface IActivityRepository {
 
     SCSkuActivityVO querySCSkuActivityBySCGoodsId(String source, String channel, String goodsId);
 
+    boolean isInCrowdTags(String tagId, String userId);
+
 
 }

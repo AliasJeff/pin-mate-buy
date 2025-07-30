@@ -22,7 +22,7 @@ public abstract class AbstractDiscountCalculateService implements IDiscountCalcu
     }
 
     private boolean isInCrowdRange(String userId, GroupBuyActivityDiscountVO.GroupBuyDiscount groupBuyDiscount) {
-        // TODO implement isInCrowdRange
+        // TODO implement isInCrowdRange / isInCrowdTags
         return true;
     }
 
