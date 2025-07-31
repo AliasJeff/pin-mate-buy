@@ -14,5 +14,8 @@ public interface IActivityRepository {
 
     boolean isInCrowdTags(String tagId, String userId);
 
+    boolean downgradeSwitch();
+
+    boolean cutRange(String userId);
 
 }
