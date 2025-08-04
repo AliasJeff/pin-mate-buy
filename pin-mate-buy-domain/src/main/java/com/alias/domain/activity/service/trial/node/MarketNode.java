@@ -44,7 +44,7 @@ public class MarketNode extends AbstractGroupBuyMarketSupport<MarketProductEntit
     @Override
     protected void multiThread(MarketProductEntity marketProductEntity, DefaultActivityStrategyFactory.DynamicContext dynamicContext) throws ExecutionException, InterruptedException, TimeoutException {
         // 异步查询活动配置
-        QueryGroupBuyActivityDiscountVOThreadTask queryGroupBuyActivityDiscountVOThreadTask = new QueryGroupBuyActivityDiscountVOThreadTask(marketProductEntity.getSource(), marketProductEntity.getChannel(), marketProductEntity.getGoodsId(), repository);
+        QueryGroupBuyActivityDiscountVOThreadTask queryGroupBuyActivityDiscountVOThreadTask = new QueryGroupBuyActivityDiscountVOThreadTask(marketProductEntity.getActivityId(), marketProductEntity.getSource(), marketProductEntity.getChannel(), marketProductEntity.getGoodsId(), repository);
         FutureTask<GroupBuyActivityDiscountVO> groupBuyActivityDiscountVOFutureTask = new FutureTask<>(queryGroupBuyActivityDiscountVOThreadTask);
         threadPoolExecutor.execute(groupBuyActivityDiscountVOFutureTask);
 

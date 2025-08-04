@@ -1,5 +1,6 @@
 package com.alias.domain.activity.model.entity;
 
+import com.alias.domain.activity.model.valobj.GroupBuyActivityDiscountVO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -27,7 +28,7 @@ public class TrialBalanceEntity {
      */
     private BigDecimal originalPrice;
     /**
-     * 折扣价格
+     * 折扣金额
      */
     private BigDecimal deductionPrice;
     /**
@@ -50,5 +51,11 @@ public class TrialBalanceEntity {
      * 是否可参与进团
      */
     private Boolean isEnable;
+
+    /**
+     * 活动配置信息
+     */
+    private GroupBuyActivityDiscountVO groupBuyActivityDiscountVO;
+
 
 }
