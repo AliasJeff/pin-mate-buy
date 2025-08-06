@@ -114,20 +114,21 @@ CREATE TABLE `group_buy_order_list` (
     `deduction_price` decimal(8,2) NOT NULL COMMENT '折扣金额',
     `status` tinyint(1) NOT NULL DEFAULT '0' COMMENT '状态；0初始锁定、1消费完成',
     `out_trade_no` varchar(12) NOT NULL COMMENT '外部交易单号-确保外部调用唯一幂等',
+    `biz_id` varchar(64) NOT NULL COMMENT '业务唯一ID',
     `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
     PRIMARY KEY (`id`),
-    UNIQUE KEY `uq_order_id` (`order_id`)
+    UNIQUE KEY `uq_order_id` (`order_id`),
+    KEY `idx_user_id_activity_id` (`user_id`,`activity_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 LOCK TABLES `group_buy_order_list` WRITE;
 /*!40000 ALTER TABLE `group_buy_order_list` DISABLE KEYS */;
 
-INSERT INTO `group_buy_order_list` (`id`, `user_id`, `team_id`, `order_id`, `activity_id`, `start_time`, `end_time`, `goods_id`, `source`, `channel`, `original_price`, `deduction_price`, `status`, `out_trade_no`, `create_time`, `update_time`)
+INSERT INTO `group_buy_order_list` (`id`, `user_id`, `team_id`, `order_id`, `activity_id`, `start_time`, `end_time`, `goods_id`, `source`, `channel`, `original_price`, `deduction_price`, `status`, `out_trade_no`, `biz_id`, `create_time`, `update_time`)
 VALUES
-    (9,'alias','64675056','394859646148',100123,'2024-12-07 10:19:40','2024-12-07 10:19:40','9890001','s01','c01',90.00,90.00,0,'314870877261','2025-01-11 15:13:08','2025-01-11 15:13:08'),
-    (10,'alias','64675056','141036625362',100123,'2024-12-07 10:19:40','2024-12-07 10:19:40','9890001','s01','c01',90.00,90.00,0,'485524644458','2025-01-11 15:13:35','2025-01-11 15:13:35'),
-    (11,'alias','64675056','686664095344',100123,'2024-12-07 10:19:40','2024-12-07 10:19:40','9890001','s01','c01',90.00,90.00,0,'942065764153','2025-01-11 15:13:47','2025-01-11 15:13:47');
+    (23,'alias','51764601','585183514461',100123,'2024-12-07 10:19:40','2025-12-07 10:19:40','9890001','s01','c01',100.00,10.00,0,'843867108777','100123_alias_1','2025-01-25 15:35:12','2025-01-25 15:35:12'),
+    (24,'zhexun','44846821','059969746419',100123,'2024-12-07 10:19:40','2025-12-07 10:19:40','9890001','s01','c01',100.00,10.00,0,'411481433880','100123_zhexun_1','2025-01-25 15:43:07','2025-01-25 15:43:07');
 
 /*!40000 ALTER TABLE `group_buy_order_list` ENABLE KEYS */;
 UNLOCK TABLES;
