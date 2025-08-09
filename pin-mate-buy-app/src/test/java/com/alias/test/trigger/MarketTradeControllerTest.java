@@ -32,7 +32,7 @@ public class MarketTradeControllerTest {
         lockMarketPayOrderRequestDTO.setSource("s01");
         lockMarketPayOrderRequestDTO.setChannel("c01");
 //        lockMarketPayOrderRequestDTO.setOutTradeNo(RandomStringUtils.randomNumeric(12));
-        lockMarketPayOrderRequestDTO.setOutTradeNo("692106358996");
+        lockMarketPayOrderRequestDTO.setOutTradeNo("692106358995");
 
         Response<LockMarketPayOrderResponseDTO> lockMarketPayOrderResponseDTOResponse = marketTradeService.lockMarketPayOrder(lockMarketPayOrderRequestDTO);
 

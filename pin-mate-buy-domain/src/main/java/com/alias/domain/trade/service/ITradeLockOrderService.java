@@ -6,7 +6,7 @@ import com.alias.domain.trade.model.entity.PayDiscountEntity;
 import com.alias.domain.trade.model.entity.UserEntity;
 import com.alias.domain.trade.model.valobj.GroupBuyProgressVO;
 
-public interface ITradeOrderService {
+public interface ITradeLockOrderService {
 
     /**
      * 查询，未被支付消费完成的营销优惠订单

@@ -8,7 +8,7 @@ import com.alias.domain.trade.model.entity.MarketPayOrderEntity;
 import com.alias.domain.trade.model.entity.PayActivityEntity;
 import com.alias.domain.trade.model.entity.PayDiscountEntity;
 import com.alias.domain.trade.model.entity.UserEntity;
-import com.alias.domain.trade.service.ITradeOrderService;
+import com.alias.domain.trade.service.ITradeLockOrderService;
 import com.alibaba.fastjson.JSON;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
@@ -24,13 +24,13 @@ import javax.annotation.Resource;
 @Slf4j
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class ITradeOrderServiceTest {
+public class TradeLockOrderServiceTest {
 
     @Resource
     private IIndexGroupBuyMarketService indexGroupBuyMarketService;
 
     @Resource
-    private ITradeOrderService tradeOrderService;
+    private ITradeLockOrderService tradeOrderService;
 
     @Test
     public void test_lockMarketPayOrder() throws Exception {
