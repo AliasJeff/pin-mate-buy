@@ -79,6 +79,7 @@ CREATE TABLE `group_buy_order` (
     `status` tinyint(1) NOT NULL DEFAULT '0' COMMENT '状态（0-拼单中、1-完成、2-失败）',
     `valid_start_time` datetime NOT NULL COMMENT '拼团开始时间',
     `valid_end_time` datetime NOT NULL COMMENT '拼团结束时间',
+    `notify_url` varchar(512) NOT NULL COMMENT '回调地址',
     `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
     PRIMARY KEY (`id`),
@@ -88,9 +89,9 @@ CREATE TABLE `group_buy_order` (
 LOCK TABLES `group_buy_order` WRITE;
 /*!40000 ALTER TABLE `group_buy_order` DISABLE KEYS */;
 
-INSERT INTO `group_buy_order` (`id`, `team_id`, `activity_id`, `source`, `channel`, `original_price`, `deduction_price`, `pay_price`, `target_count`, `complete_count`, `lock_count`, `status`, `create_time`, `update_time`)
+INSERT INTO `group_buy_order` (`id`, `team_id`, `activity_id`, `source`, `channel`, `original_price`, `deduction_price`, `pay_price`, `target_count`, `complete_count`, `lock_count`, `status`, `valid_start_time`, `valid_end_time`, `notify_url`, `create_time`, `update_time`)
 VALUES
-    (7,'64675056',100123,'s01','c01',100.00,90.00,0.00,3,3,0,0,'2025-01-11 15:13:08','2025-01-11 15:13:47');
+    (3,'80759049',100123,'s01','c01',100.00,10.00,90.00,3,3,3,1,'2025-01-31 17:28:19','2025-01-31 18:28:19','http://127.0.0.1:8091/api/v1/test/group_buy_notify','2025-01-31 17:28:19','2025-01-31 17:51:38');
 
 /*!40000 ALTER TABLE `group_buy_order` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -331,7 +332,8 @@ CREATE TABLE `notify_task` (
     `parameter_json` varchar(256) NOT NULL COMMENT '参数对象',
     `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-    PRIMARY KEY (`id`)
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `uq_team_id` (`team_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 LOCK TABLES `notify_task` WRITE;

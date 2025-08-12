@@ -31,6 +31,13 @@ public class TagServiceImpl implements ITagService {
         // 3. 数据写入记录
         List<String> userIdList = new ArrayList<String>() {{
             add("alias");
+            add("alias01");
+            add("alias02");
+            add("alias03");
+            add("alias04");
+            add("alias05");
+            add("alias06");
+            add("alias07");
             add("zhexun");
         }};
 
