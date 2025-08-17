@@ -1,5 +1,6 @@
 package com.alias.domain.trade.service;
 
+import com.alias.domain.trade.model.entity.NotifyTaskEntity;
 import com.alias.domain.trade.model.entity.TradePaySettlementEntity;
 import com.alias.domain.trade.model.entity.TradePaySuccessEntity;
 
@@ -34,5 +35,15 @@ public interface ITradeSettlementOrderService {
      * @throws Exception 异常
      */
     Map<String, Integer> execSettlementNotifyJob(String teamId) throws Exception;
+
+    /**
+     * 执行结算通知任务
+     *
+     * @param notifyTaskEntity 通知任务对象
+     * @return 结算数量
+     * @throws Exception 异常
+     */
+    Map<String, Integer> execSettlementNotifyJob(NotifyTaskEntity notifyTaskEntity) throws Exception;
+
 
 }

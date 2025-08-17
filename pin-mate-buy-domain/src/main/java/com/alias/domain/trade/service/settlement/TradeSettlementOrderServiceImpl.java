@@ -8,14 +8,17 @@ import com.alias.domain.trade.service.ITradeSettlementOrderService;
 import com.alias.domain.trade.service.settlement.factory.TradeSettlementRuleFilterFactory;
 import com.alias.types.design.framework.link.model2.chain.BusinessLinkedList;
 import com.alias.types.enums.NotifyTaskHTTPEnumVO;
+import com.alias.types.exception.AppException;
 import com.alibaba.fastjson.JSON;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ThreadPoolExecutor;
 
 @Slf4j
 @Service
@@ -25,6 +28,9 @@ public class TradeSettlementOrderServiceImpl implements ITradeSettlementOrderSer
     private ITradeRepository repository;
     @Resource
     private ITradePort port;
+
+    @Resource
+    private ThreadPoolExecutor threadPoolExecutor;
 
     @Resource
     private BusinessLinkedList<TradeSettlementRuleCommandEntity, TradeSettlementRuleFilterFactory.DynamicContext, TradeSettlementRuleFilterBackEntity> tradeSettlementRuleFilter;
@@ -56,7 +62,7 @@ public class TradeSettlementOrderServiceImpl implements ITradeSettlementOrderSer
                 .status(tradeSettlementRuleFilterBackEntity.getStatus())
                 .validStartTime(tradeSettlementRuleFilterBackEntity.getValidStartTime())
                 .validEndTime(tradeSettlementRuleFilterBackEntity.getValidEndTime())
-                .notifyUrl(tradeSettlementRuleFilterBackEntity.getNotifyUrl())
+                .notifyConfigVO(tradeSettlementRuleFilterBackEntity.getNotifyConfigVO())
                 .build();
 
         // 3. 构建聚合对象
@@ -67,12 +73,20 @@ public class TradeSettlementOrderServiceImpl implements ITradeSettlementOrderSer
                 .build();
 
         // 4. 拼团交易结算
-        boolean isNotify = repository.settlementMarketPayOrder(groupBuyTeamSettlementAggregate);
+        NotifyTaskEntity notifyTaskEntity = repository.settlementMarketPayOrder(groupBuyTeamSettlementAggregate);
 
         // 5. 组队回调处理 - 处理失败也会有定时任务补偿，通过这样的方式，可以减轻任务调度，提高时效性
-        if (isNotify) {
-            Map<String, Integer> notifyResultMap = execSettlementNotifyJob(teamId);
-            log.info("回调通知拼团完结 result:{}", JSON.toJSONString(notifyResultMap));
+        if (null != notifyTaskEntity) {
+            threadPoolExecutor.execute(() -> {
+                Map<String, Integer> notifyResultMap = null;
+                try {
+                    notifyResultMap = execSettlementNotifyJob(notifyTaskEntity);
+                    log.info("回调通知拼团完结 result:{}", JSON.toJSONString(notifyResultMap));
+                } catch (Exception e) {
+                    log.error("回调通知拼团完结失败 result:{}", JSON.toJSONString(notifyResultMap), e);
+                    throw new AppException(e.getMessage());
+                }
+            });
         }
 
         // 6. 返回结算信息 - 公司中开发这样的流程时候，会根据外部需要进行值的设置
@@ -84,6 +98,12 @@ public class TradeSettlementOrderServiceImpl implements ITradeSettlementOrderSer
                 .activityId(groupBuyTeamEntity.getActivityId())
                 .outTradeNo(tradePaySuccessEntity.getOutTradeNo())
                 .build();
+    }
+
+    @Override
+    public Map<String, Integer> execSettlementNotifyJob(NotifyTaskEntity notifyTaskEntity) throws Exception {
+        log.info("拼团交易-执行结算通知回调，指定 teamId:{} notifyTaskEntity:{}", notifyTaskEntity.getTeamId(), JSON.toJSONString(notifyTaskEntity));
+        return execSettlementNotifyJob(Collections.singletonList(notifyTaskEntity));
     }
 
     @Override
@@ -116,7 +136,7 @@ public class TradeSettlementOrderServiceImpl implements ITradeSettlementOrderSer
                     successCount += 1;
                 }
             } else if (NotifyTaskHTTPEnumVO.ERROR.getCode().equals(response)) {
-                if (notifyTask.getNotifyCount() < 5) {
+                if (notifyTask.getNotifyCount() > 4) {
                     int updateCount = repository.updateNotifyTaskStatusError(notifyTask.getTeamId());
                     if (1 == updateCount) {
                         errorCount += 1;

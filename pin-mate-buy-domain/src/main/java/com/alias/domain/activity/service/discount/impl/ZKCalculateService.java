@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 /**
  * 折扣优惠计算
@@ -15,14 +16,22 @@ import java.math.BigDecimal;
 public class ZKCalculateService extends AbstractDiscountCalculateService {
     @Override
     protected BigDecimal doCalculate(BigDecimal originalPrice, GroupBuyActivityDiscountVO.GroupBuyDiscount groupBuyDiscount) {
-        BigDecimal discount = new BigDecimal(groupBuyDiscount.getMarketExpr());
 
-        BigDecimal price = originalPrice.multiply(discount);
+        log.info("优惠策略折扣计算:{}", groupBuyDiscount.getDiscountType().getCode());
 
-        if (price.compareTo(BigDecimal.ZERO) <= 0) {
+        // 折扣表达式 - 折扣百分比
+        String marketExpr = groupBuyDiscount.getMarketExpr();
+
+        // 折扣价格 + 四舍五入
+        BigDecimal deductionPrice = originalPrice.multiply(new BigDecimal(marketExpr)).setScale(0, RoundingMode.DOWN);
+
+        // 判断折扣后金额，最低支付1分钱
+        if (deductionPrice.compareTo(BigDecimal.ZERO) <= 0) {
             return new BigDecimal("0.01");
         }
 
-        return price;
+        return deductionPrice;
+
+
     }
 }

@@ -56,13 +56,14 @@ public class TagRepository implements ITagRepository {
         try {
             crowdTagsDetailDao.addCrowdTagsUserId(crowdTagsDetailReq);
 
-            // 获取BitSet
-            RBitSet bitSet = redisService.getBitSet(tagId);
-            bitSet.set(redisService.getIndexFromUserId(userId), true);
         } catch (DuplicateKeyException ignore) {
             // 忽略唯一索引冲突
             log.info("忽略唯一索引冲突, tagId: {}, userId: {}", tagId, userId);
         }
+
+        // 获取BitSet
+        RBitSet bitSet = redisService.getBitSet(tagId);
+        bitSet.set(redisService.getIndexFromUserId(userId), true);
     }
 
     @Override

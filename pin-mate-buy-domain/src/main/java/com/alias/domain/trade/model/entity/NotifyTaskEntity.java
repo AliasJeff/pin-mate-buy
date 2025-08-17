@@ -27,6 +27,14 @@ public class NotifyTaskEntity {
      */
     private Integer notifyCount;
     /**
+     * 回调类型
+     */
+    private String notifyType;
+    /**
+     * 回调消息
+     */
+    private String notifyMQ;
+    /**
      * 参数对象
      */
     private String parameterJson;
