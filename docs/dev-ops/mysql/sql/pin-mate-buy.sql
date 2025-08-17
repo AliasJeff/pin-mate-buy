@@ -52,7 +52,7 @@ LOCK TABLES `group_buy_activity` WRITE;
 
 INSERT INTO `group_buy_activity` (`id`, `activity_id`, `activity_name`, `discount_id`, `group_type`, `take_limit_count`, `target`, `valid_time`, `status`, `start_time`, `end_time`, `tag_id`, `tag_scope`, `create_time`, `update_time`)
 VALUES
-    (1,100123,'测试活动','25120208',0,1,3,15,1,'2024-12-07 10:19:40','2024-12-07 10:19:40','RQ_KJHKL98UU78H66554GFDV','1,2','2024-12-07 10:19:40','2025-01-11 15:08:42');
+    (1,100123,'测试活动','25120208',0,1,3,15,1,'2025-01-07 10:19:40','2028-12-07 10:19:40','RQ_KJHKL98UU78H66554GFDV','1,2','2024-12-07 10:19:40','2025-01-11 15:08:42');
 
 
 /*!40000 ALTER TABLE `group_buy_activity` ENABLE KEYS */;
@@ -79,19 +79,23 @@ CREATE TABLE `group_buy_order` (
     `status` tinyint(1) NOT NULL DEFAULT '0' COMMENT '状态（0-拼单中、1-完成、2-失败）',
     `valid_start_time` datetime NOT NULL COMMENT '拼团开始时间',
     `valid_end_time` datetime NOT NULL COMMENT '拼团结束时间',
-    `notify_url` varchar(512) NOT NULL COMMENT '回调地址',
+    `notify_type` varchar(8) NOT NULL DEFAULT 'HTTP' COMMENT '回调类型（HTTP、MQ）',
+    `notify_url` varchar(512) DEFAULT NULL COMMENT '回调地址（HTTP 回调不可为空）',
     `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
     PRIMARY KEY (`id`),
     UNIQUE KEY `uq_team_id` (`team_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+
 LOCK TABLES `group_buy_order` WRITE;
 /*!40000 ALTER TABLE `group_buy_order` DISABLE KEYS */;
 
-INSERT INTO `group_buy_order` (`id`, `team_id`, `activity_id`, `source`, `channel`, `original_price`, `deduction_price`, `pay_price`, `target_count`, `complete_count`, `lock_count`, `status`, `valid_start_time`, `valid_end_time`, `notify_url`, `create_time`, `update_time`)
+INSERT INTO `group_buy_order` (`id`, `team_id`, `activity_id`, `source`, `channel`, `original_price`, `deduction_price`, `pay_price`, `target_count`, `complete_count`, `lock_count`, `status`, `valid_start_time`, `valid_end_time`, `notify_type`, `notify_url`, `create_time`, `update_time`)
 VALUES
-    (3,'80759049',100123,'s01','c01',100.00,10.00,90.00,3,3,3,1,'2025-01-31 17:28:19','2025-01-31 18:28:19','http://127.0.0.1:8091/api/v1/test/group_buy_notify','2025-01-31 17:28:19','2025-01-31 17:51:38');
+    (1,'80759049',100123,'s01','c01',100.00,20.00,80.00,1,1,1,1,'2025-03-16 17:43:44','2025-05-16 17:58:44','MQ',NULL,'2025-03-16 17:43:43','2025-03-16 18:23:05'),
+    (2,'16341565',100123,'s01','c01',100.00,20.00,80.00,1,1,1,1,'2025-03-16 18:27:52','2025-03-16 18:42:52','HTTP','http://127.0.0.1:8091/api/v1/test/group_buy_notify','2025-03-16 18:27:51','2025-03-16 18:28:58'),
+    (3,'63403622',100123,'s01','c01',100.00,20.00,80.00,1,1,1,1,'2025-03-17 22:11:26','2025-03-17 22:26:26','MQ',NULL,'2025-03-17 22:11:26','2025-03-17 22:12:04');
 
 /*!40000 ALTER TABLE `group_buy_order` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -115,6 +119,7 @@ CREATE TABLE `group_buy_order_list` (
     `channel` varchar(8) NOT NULL COMMENT '来源',
     `original_price` decimal(8,2) NOT NULL COMMENT '原始价格',
     `deduction_price` decimal(8,2) NOT NULL COMMENT '折扣金额',
+    `pay_price` decimal(8,2) NOT NULL COMMENT '支付金额',
     `status` tinyint(1) NOT NULL DEFAULT '0' COMMENT '状态；0初始锁定、1消费完成、2用户退单',
     `out_trade_no` varchar(12) NOT NULL COMMENT '外部交易单号-确保外部调用唯一幂等',
     `out_trade_time` datetime DEFAULT NULL COMMENT '外部交易时间',
@@ -129,10 +134,10 @@ CREATE TABLE `group_buy_order_list` (
 LOCK TABLES `group_buy_order_list` WRITE;
 /*!40000 ALTER TABLE `group_buy_order_list` DISABLE KEYS */;
 
-INSERT INTO `group_buy_order_list` (`id`, `user_id`, `team_id`, `order_id`, `activity_id`, `start_time`, `end_time`, `goods_id`, `source`, `channel`, `original_price`, `deduction_price`, `status`, `out_trade_no`, `biz_id`, `create_time`, `update_time`)
+INSERT INTO `group_buy_order_list` (`id`, `user_id`, `team_id`, `order_id`, `activity_id`, `start_time`, `end_time`, `goods_id`, `source`, `channel`, `original_price`, `deduction_price`, `pay_price`, `status`, `out_trade_no`, `out_trade_time`, `biz_id`, `create_time`, `update_time`)
 VALUES
-    (23,'alias','51764601','585183514461',100123,'2024-12-07 10:19:40','2025-12-07 10:19:40','9890001','s01','c01',100.00,10.00,0,'843867108777','100123_alias_1','2025-01-25 15:35:12','2025-01-25 15:35:12'),
-    (24,'zhexun','44846821','059969746419',100123,'2024-12-07 10:19:40','2025-12-07 10:19:40','9890001','s01','c01',100.00,10.00,0,'411481433880','100123_zhexun_1','2025-01-25 15:43:07','2025-01-25 15:43:07');
+    (1,'alias','58693013','480088144059',100123,'2024-12-07 10:19:40','2029-12-07 10:19:40','9890001','s01','c01',100.00,20.00,80.00,1,'214969043474','2025-03-16 18:23:05','100123_alias_1','2025-03-16 17:43:43','2025-03-16 18:23:05'),
+    (2,'zhexun','16341565','550620893253',100123,'2024-12-07 10:19:40','2029-12-07 10:19:40','9890001','s01','c01',100.00,20.00,80.00,1,'539291175688','2025-03-16 18:28:59','100123_zhexun_1','2025-03-16 18:27:51','2025-03-16 18:28:58');
 
 /*!40000 ALTER TABLE `group_buy_order_list` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -326,7 +331,9 @@ CREATE TABLE `notify_task` (
     `id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '自增ID',
     `activity_id` bigint(8) NOT NULL COMMENT '活动ID',
     `team_id` varchar(8) NOT NULL COMMENT '拼单组队ID',
-    `notify_url` varchar(128) NOT NULL COMMENT '回调接口',
+    `notify_type` varchar(8) NOT NULL DEFAULT 'HTTP' COMMENT '回调类型（HTTP、MQ）',
+    `notify_mq` varchar(32) DEFAULT NULL COMMENT '回调消息',
+    `notify_url` varchar(128) DEFAULT NULL COMMENT '回调接口',
     `notify_count` int(8) NOT NULL COMMENT '回调次数',
     `notify_status` tinyint(1) NOT NULL COMMENT '回调状态【0初始、1完成、2重试、3失败】',
     `parameter_json` varchar(256) NOT NULL COMMENT '参数对象',
@@ -339,9 +346,12 @@ CREATE TABLE `notify_task` (
 LOCK TABLES `notify_task` WRITE;
 /*!40000 ALTER TABLE `notify_task` DISABLE KEYS */;
 
-INSERT INTO `notify_task` (`id`, `activity_id`, `team_id`, `notify_url`, `notify_count`, `notify_status`, `parameter_json`, `create_time`, `update_time`)
+INSERT INTO `notify_task` (`id`, `activity_id`, `team_id`, `notify_type`, `notify_mq`, `notify_url`, `notify_count`, `notify_status`, `parameter_json`, `create_time`, `update_time`)
 VALUES
-    (1,100123,'46832479','暂无',0,0,'{\"teamId\":\"46832479\",\"outTradeNoList\":[\"581909866926\",\"155123092895\",\"451517755304\"]}','2025-01-26 19:11:46','2025-01-26 19:11:46');
+    (7,100123,'58693013','MQ','topic.team_success',NULL,1,1,'{\"teamId\":\"58693013\",\"outTradeNoList\":[\"214969043474\"]}','2025-03-16 18:23:05','2025-03-16 18:23:05'),
+    (8,100123,'16341565','HTTP','topic.team_success','http://127.0.0.1:8091/api/v1/test/group_buy_notify',1,1,'{\"teamId\":\"16341565\",\"outTradeNoList\":[\"539291175688\"]}','2025-03-16 18:28:59','2025-03-16 18:29:12'),
+    (9,100123,'63403622','MQ','topic.team_success',NULL,1,1,'{\"teamId\":\"63403622\",\"outTradeNoList\":[\"904941690333\"]}','2025-03-17 22:12:04','2025-03-17 22:12:04');
+
 
 /*!40000 ALTER TABLE `notify_task` ENABLE KEYS */;
 UNLOCK TABLES;
