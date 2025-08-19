@@ -24,7 +24,7 @@ public class GroupBuyDiscount {
     /**
      * 折扣ID
      */
-    private Integer discountId;
+    private String discountId;
 
     /**
      * 折扣标题
@@ -65,5 +65,9 @@ public class GroupBuyDiscount {
      * 更新时间
      */
     private Date updateTime;
+
+    public static String cacheRedisKey(String discountId) {
+        return "group_buy_market_com.alias.infrastructure.dao.po.GroupBuyDiscount_" + discountId;
+    }
 
 }
