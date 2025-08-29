@@ -1,6 +1,7 @@
 # 命令执行 docker-compose -f docker-compose-environment-aliyun.yml up -d
 # docker 代理和使用文档；https://bugstack.cn/md/road-map/docker.html
 version: '3.9'
+name: 'pin-mate-buy-aliyun'
 services:
   mysql:
     image: registry.cn-hangzhou.aliyuncs.com/xfg-studio/mysql:8.0.32
