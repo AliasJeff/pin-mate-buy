@@ -1,16 +1,17 @@
 package com.alias.domain.trade.service.refund;
 
-import com.alias.domain.trade.adapter.repository.ITradeRepository;
-import com.alias.domain.trade.model.entity.*;
-import com.alias.domain.trade.model.enums.TradeOrderStatusEnumVO;
+import com.alias.domain.trade.model.entity.TradeRefundBehaviorEntity;
+import com.alias.domain.trade.model.entity.TradeRefundCommandEntity;
 import com.alias.domain.trade.model.valobj.RefundTypeEnumVO;
 import com.alias.domain.trade.model.valobj.TeamRefundSuccess;
 import com.alias.domain.trade.service.ITradeRefundOrderService;
 import com.alias.domain.trade.service.refund.business.IRefundOrderStrategy;
-import com.alias.types.enums.GroupBuyOrderEnumVO;
+import com.alias.domain.trade.service.refund.factory.TradeRefundRuleFilterFactory;
+import com.alias.types.design.framework.link.model2.chain.BusinessLinkedList;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.util.Map;
 
 /**
@@ -20,12 +21,11 @@ import java.util.Map;
 @Service
 public class TradeRefundOrderService implements ITradeRefundOrderService {
 
-    private final ITradeRepository repository;
-
     private final Map<String, IRefundOrderStrategy> refundOrderStrategyMap;
+    @Resource
+    private BusinessLinkedList<TradeRefundCommandEntity, TradeRefundRuleFilterFactory.DynamicContext, TradeRefundBehaviorEntity> tradeRefundRuleFilter;
 
-    public TradeRefundOrderService(ITradeRepository repository, Map<String, IRefundOrderStrategy> refundOrderStrategyMap) {
-        this.repository = repository;
+    public TradeRefundOrderService(Map<String, IRefundOrderStrategy> refundOrderStrategyMap) {
         this.refundOrderStrategyMap = refundOrderStrategyMap;
     }
 
@@ -33,43 +33,7 @@ public class TradeRefundOrderService implements ITradeRefundOrderService {
     public TradeRefundBehaviorEntity refundOrder(TradeRefundCommandEntity tradeRefundCommandEntity) throws Exception {
         log.info("逆向流程，退单操作 userId:{} outTradeNo:{}", tradeRefundCommandEntity.getUserId(), tradeRefundCommandEntity.getOutTradeNo());
 
-        // 1. 查询外部交易单，组队id、orderId、拼团状态
-        MarketPayOrderEntity marketPayOrderEntity = repository.queryMarketPayOrderEntityByOutTradeNo(tradeRefundCommandEntity.getUserId(), tradeRefundCommandEntity.getOutTradeNo());
-        TradeOrderStatusEnumVO tradeOrderStatusEnumVO = marketPayOrderEntity.getTradeOrderStatusEnumVO();
-        String teamId = marketPayOrderEntity.getTeamId();
-        String orderId = marketPayOrderEntity.getOrderId();
-
-        // 返回幂等，已完成退单
-        if (TradeOrderStatusEnumVO.CLOSE.equals(tradeOrderStatusEnumVO)) {
-            log.info("逆向流程，退单操作(幂等-重复退单) userId:{} outTradeNo:{}", tradeRefundCommandEntity.getUserId(), tradeRefundCommandEntity.getOutTradeNo());
-            return TradeRefundBehaviorEntity.builder()
-                    .userId(tradeRefundCommandEntity.getUserId())
-                    .orderId(orderId)
-                    .teamId(teamId)
-                    .tradeRefundBehaviorEnum(TradeRefundBehaviorEntity.TradeRefundBehaviorEnum.REPEAT)
-                    .build();
-        }
-
-        // 2. 查询拼团状态
-        GroupBuyTeamEntity groupBuyTeamEntity = repository.queryGroupBuyTeamByTeamId(teamId);
-        GroupBuyOrderEnumVO groupBuyOrderEnumVO = groupBuyTeamEntity.getStatus();
-
-        // 3. 状态类型判断 - 使用策略模式获取退款类型
-        RefundTypeEnumVO refundType = RefundTypeEnumVO.getRefundStrategy(groupBuyOrderEnumVO, tradeOrderStatusEnumVO);
-        IRefundOrderStrategy refundOrderStrategy = refundOrderStrategyMap.get(refundType.getStrategy());
-        refundOrderStrategy.refundOrder(TradeRefundOrderEntity.builder()
-                .userId(tradeRefundCommandEntity.getUserId())
-                .orderId(orderId)
-                .teamId(teamId)
-                .activityId(groupBuyTeamEntity.getActivityId())
-                .build());
-
-        return TradeRefundBehaviorEntity.builder()
-                .userId(tradeRefundCommandEntity.getUserId())
-                .orderId(orderId)
-                .teamId(teamId)
-                .tradeRefundBehaviorEnum(TradeRefundBehaviorEntity.TradeRefundBehaviorEnum.SUCCESS)
-                .build();
+        return tradeRefundRuleFilter.apply(tradeRefundCommandEntity, new TradeRefundRuleFilterFactory.DynamicContext());
     }
 
     @Override

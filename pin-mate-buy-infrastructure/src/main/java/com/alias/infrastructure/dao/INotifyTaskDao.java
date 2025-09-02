@@ -17,12 +17,11 @@ public interface INotifyTaskDao {
 
     NotifyTask queryUnExecutedNotifyTaskByTeamId(String teamId);
 
-    int updateNotifyTaskStatusSuccess(String teamId);
+    int updateNotifyTaskStatusSuccess(NotifyTask notifyTask);
 
-    int updateNotifyTaskStatusError(String teamId);
+    int updateNotifyTaskStatusError(NotifyTask notifyTask);
 
-    int updateNotifyTaskStatusRetry(String teamId);
-
+    int updateNotifyTaskStatusRetry(NotifyTask notifyTask);
 
 }
 
