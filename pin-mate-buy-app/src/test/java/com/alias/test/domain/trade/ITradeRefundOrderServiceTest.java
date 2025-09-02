@@ -42,5 +42,59 @@ public class ITradeRefundOrderServiceTest {
         new CountDownLatch(1).await();
     }
 
+    @Test
+    public void test_refundOrder_01() throws Exception {
+        TradeRefundCommandEntity tradeRefundCommandEntity = TradeRefundCommandEntity.builder()
+                .userId("alias")
+                .outTradeNo("727869517356")
+                .source("s01")
+                .channel("c01")
+                .build();
+
+        TradeRefundBehaviorEntity tradeRefundBehaviorEntity = tradeRefundOrderService.refundOrder(tradeRefundCommandEntity);
+
+        log.info("请求参数:{}", JSON.toJSONString(tradeRefundCommandEntity));
+        log.info("测试结果:{}", JSON.toJSONString(tradeRefundBehaviorEntity));
+
+        // 暂停，等待MQ消息。处理完后，手动关闭程序
+        new CountDownLatch(1).await();
+    }
+
+    @Test
+    public void test_refundOrder_02() throws Exception {
+        TradeRefundCommandEntity tradeRefundCommandEntity = TradeRefundCommandEntity.builder()
+                .userId("alias01")
+                .outTradeNo("441842218120")
+                .source("s01")
+                .channel("c01")
+                .build();
+
+        TradeRefundBehaviorEntity tradeRefundBehaviorEntity = tradeRefundOrderService.refundOrder(tradeRefundCommandEntity);
+
+        log.info("请求参数:{}", JSON.toJSONString(tradeRefundCommandEntity));
+        log.info("测试结果:{}", JSON.toJSONString(tradeRefundBehaviorEntity));
+
+        // 暂停，等待MQ消息。处理完后，手动关闭程序
+        new CountDownLatch(1).await();
+    }
+
+    @Test
+    public void test_refundOrder_03() throws Exception {
+        TradeRefundCommandEntity tradeRefundCommandEntity = TradeRefundCommandEntity.builder()
+                .userId("alias02")
+                .outTradeNo("061974054911")
+                .source("s01")
+                .channel("c01")
+                .build();
+
+        TradeRefundBehaviorEntity tradeRefundBehaviorEntity = tradeRefundOrderService.refundOrder(tradeRefundCommandEntity);
+
+        log.info("请求参数:{}", JSON.toJSONString(tradeRefundCommandEntity));
+        log.info("测试结果:{}", JSON.toJSONString(tradeRefundBehaviorEntity));
+
+        // 暂停，等待MQ消息。处理完后，手动关闭程序
+        new CountDownLatch(1).await();
+    }
+
 }
 

@@ -29,6 +29,10 @@ public class NotifyTask {
      */
     private String teamId;
     /**
+     * 回调种类
+     */
+    private String notifyCategory;
+    /**
      * 回调类型
      */
     private String notifyType;
@@ -52,6 +56,10 @@ public class NotifyTask {
      * 参数对象
      */
     private String parameterJson;
+    /**
+     * 唯一标识
+     */
+    private String uuid;
     /**
      * 创建时间
      */
