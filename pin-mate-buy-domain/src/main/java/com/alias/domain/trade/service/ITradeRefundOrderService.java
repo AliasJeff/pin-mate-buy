@@ -1,8 +1,11 @@
 package com.alias.domain.trade.service;
 
+import com.alias.domain.activity.model.entity.UserGroupBuyOrderDetailEntity;
 import com.alias.domain.trade.model.entity.TradeRefundBehaviorEntity;
 import com.alias.domain.trade.model.entity.TradeRefundCommandEntity;
 import com.alias.domain.trade.model.valobj.TeamRefundSuccess;
+
+import java.util.List;
 
 /**
  * 退单，逆向流程接口
@@ -18,6 +21,14 @@ public interface ITradeRefundOrderService {
      * @throws Exception 异常
      */
     void restoreTeamLockStock(TeamRefundSuccess teamRefundSuccess) throws Exception;
+
+    /**
+     * 查询超时未支付订单列表
+     * 条件：当前时间不在活动时间范围内、状态为0（初始锁定）、out_trade_time为空
+     *
+     * @return 超时未支付订单列表，限制10条
+     */
+    List<UserGroupBuyOrderDetailEntity> queryTimeoutUnpaidOrderList();
 
 }
 

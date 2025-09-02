@@ -1,9 +1,6 @@
 package com.alias.api;
 
-import com.alias.api.dto.LockMarketPayOrderRequestDTO;
-import com.alias.api.dto.LockMarketPayOrderResponseDTO;
-import com.alias.api.dto.SettlementMarketPayOrderRequestDTO;
-import com.alias.api.dto.SettlementMarketPayOrderResponseDTO;
+import com.alias.api.dto.*;
 import com.alias.api.response.Response;
 
 /**
@@ -26,6 +23,14 @@ public interface IMarketTradeService {
      * @return 结算结果信息
      */
     Response<SettlementMarketPayOrderResponseDTO> settlementMarketPayOrder(SettlementMarketPayOrderRequestDTO requestDTO);
+
+    /**
+     * 营销拼团退单
+     *
+     * @param requestDTO 退单请求信息
+     * @return 退单结果信息
+     */
+    Response<RefundMarketPayOrderResponseDTO> refundMarketPayOrder(RefundMarketPayOrderRequestDTO requestDTO);
 
 }
 

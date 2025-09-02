@@ -39,5 +39,10 @@ public class TeamRefundSuccess {
      */
     private String orderId;
 
+    /**
+     * 外部交易单号
+     */
+    private String outTradeNo;
+
 }
 

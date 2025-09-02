@@ -1,5 +1,6 @@
 package com.alias.domain.trade.adapter.repository;
 
+import com.alias.domain.activity.model.entity.UserGroupBuyOrderDetailEntity;
 import com.alias.domain.trade.model.aggregate.GroupBuyOrderAggregate;
 import com.alias.domain.trade.model.aggregate.GroupBuyRefundAggregate;
 import com.alias.domain.trade.model.aggregate.GroupBuyTeamSettlementAggregate;
@@ -50,5 +51,7 @@ public interface ITradeRepository {
     NotifyTaskEntity paidTeam2Refund(GroupBuyRefundAggregate groupBuyRefundAggregate);
 
     void refund2AddRecovery(String recoveryTeamStockKey, String orderId);
+
+    List<UserGroupBuyOrderDetailEntity> queryTimeoutUnpaidOrderList();
 
 }
