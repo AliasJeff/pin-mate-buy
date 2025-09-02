@@ -1,6 +1,7 @@
 package com.alias.domain.trade.adapter.repository;
 
 import com.alias.domain.trade.model.aggregate.GroupBuyOrderAggregate;
+import com.alias.domain.trade.model.aggregate.GroupBuyRefundAggregate;
 import com.alias.domain.trade.model.aggregate.GroupBuyTeamSettlementAggregate;
 import com.alias.domain.trade.model.entity.GroupBuyActivityEntity;
 import com.alias.domain.trade.model.entity.GroupBuyTeamEntity;
@@ -41,5 +42,7 @@ public interface ITradeRepository {
     boolean occupyTeamStock(String teamStockKey, String recoveryTeamStockKey, Integer target, Integer validTime);
 
     void recoveryTeamStock(String recoveryTeamStockKey, Integer validTime);
+
+    void unpaid2Refund(GroupBuyRefundAggregate groupBuyRefundAggregate);
 
 }

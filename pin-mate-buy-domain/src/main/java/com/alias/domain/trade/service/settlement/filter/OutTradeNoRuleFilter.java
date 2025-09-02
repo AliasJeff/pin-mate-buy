@@ -4,6 +4,7 @@ import com.alias.domain.trade.adapter.repository.ITradeRepository;
 import com.alias.domain.trade.model.entity.MarketPayOrderEntity;
 import com.alias.domain.trade.model.entity.TradeSettlementRuleCommandEntity;
 import com.alias.domain.trade.model.entity.TradeSettlementRuleFilterBackEntity;
+import com.alias.domain.trade.model.enums.TradeOrderStatusEnumVO;
 import com.alias.domain.trade.service.settlement.factory.TradeSettlementRuleFilterFactory;
 import com.alias.types.design.framework.link.model2.handler.ILogicHandler;
 import com.alias.types.enums.ResponseCode;
@@ -30,7 +31,7 @@ public class OutTradeNoRuleFilter implements ILogicHandler<TradeSettlementRuleCo
         // 查询拼团信息
         MarketPayOrderEntity marketPayOrderEntity = repository.queryMarketPayOrderEntityByOutTradeNo(requestParameter.getUserId(), requestParameter.getOutTradeNo());
 
-        if (null == marketPayOrderEntity) {
+        if (null == marketPayOrderEntity || TradeOrderStatusEnumVO.CLOSE.equals(marketPayOrderEntity.getTradeOrderStatusEnumVO())) {
             log.error("不存在的外部交易单号或用户已退单，不需要做支付订单结算:{} outTradeNo:{}", requestParameter.getUserId(), requestParameter.getOutTradeNo());
             throw new AppException(ResponseCode.E0104);
         }

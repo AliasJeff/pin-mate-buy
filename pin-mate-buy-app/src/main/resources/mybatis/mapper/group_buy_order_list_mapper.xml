@@ -52,7 +52,6 @@
         from group_buy_order_list
         where out_trade_no = #{outTradeNo}
           and user_id = #{userId}
-          and status = 0
     </select>
 
     <select id="queryOrderCountByActivityId" parameterType="com.alias.infrastructure.dao.po.GroupBuyOrderList"
@@ -118,6 +117,15 @@
           and status in (0, 1)
         group by team_id
     </select>
+
+    <update id="unpaid2Refund" parameterType="com.alias.infrastructure.dao.po.GroupBuyOrderList">
+        update group_buy_order_list
+        set status      = 2,
+            update_time = now()
+        where user_id = #{userId}
+          and order_id = #{orderId}
+          and status = 0
+    </update>
 
 
 </mapper>
