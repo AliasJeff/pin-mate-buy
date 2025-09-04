@@ -30,9 +30,9 @@ services:
       - GF_DATABASE_HOST=host.docker.internal:13306
       - GF_DATABASE_NAME=grafana
       - GF_DATABASE_USER=root
-      - GF_DATABASE_PASSWORD=123456
+      - GF_DATABASE_PASSWORD=12345678
       - GF_SECURITY_ADMIN_USER=admin
-      - GF_SECURITY_ADMIN_PASSWORD=123456
+      - GF_SECURITY_ADMIN_PASSWORD=12345678
     networks:
       - my-network
 

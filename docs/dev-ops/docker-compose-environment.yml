@@ -9,7 +9,7 @@ services:
     restart: always
     environment:
       TZ: Asia/Shanghai
-      MYSQL_ROOT_PASSWORD: 123456
+      MYSQL_ROOT_PASSWORD: 12345678
     ports:
       - "13306:3306"
     volumes:
@@ -33,7 +33,7 @@ services:
     environment:
       - PMA_HOST=mysql
       - PMA_PORT=3306
-      - MYSQL_ROOT_PASSWORD=123456
+      - MYSQL_ROOT_PASSWORD=12345678
     depends_on:
       mysql:
         condition: service_healthy
