@@ -18,7 +18,7 @@ services:
     privileged: true
   # 部署后端项目 - 小型支付商城
   s-pay-mall-app:
-    image: fuzhengwei/s-pay-mall-ddd-app:3.0
+    image: fuzhengwei/alias-payhub-app:2.0
     container_name: s-pay-mall-app
     restart: on-failure
     ports:
@@ -30,7 +30,7 @@ services:
       - APP_CONFIG_GROUP_BUY_MARKET_NOTIFY_URL=http://117.72.178.217/api/v1/alipay/group_buy_notify
       - SPRING_DATASOURCE_USERNAME=root
       - SPRING_DATASOURCE_PASSWORD=12345678
-      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/pay-hub?serverTimezone=UTC&characterEncoding=utf8&autoReconnect=true&serverTimezone=Asia/Shanghai
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/alias-payhub?serverTimezone=UTC&characterEncoding=utf8&autoReconnect=true&serverTimezone=Asia/Shanghai
       - SPRING_DATASOURCE_DRIVER_CLASS_NAME=com.mysql.cj.jdbc.Driver
       - SPRING_HIKARI_POOL_NAME=Retail_HikariCP
       - SPRING_RABBITMQ_ADDRESSES=rabbitmq
@@ -58,7 +58,7 @@ services:
   # 原镜像，需要自己构建；fuzhengwei/group-buy-market-app:3.0
   # 代理镜像（小傅哥打包好的，可以直接使用）； registry.cn-hangzhou.aliyuncs.com/xfg-studio/group-buy-market-app:3.0
   group-buy-market-01:
-    image: fuzhengwei/group-buy-market-app:3.0
+    image: system/pin-mate-buy-app:1.0-SNAPSHOT
     container_name: group-buy-market-app-01
     restart: on-failure
     ports:
@@ -92,7 +92,7 @@ services:
       - my-network
   # # 拼团，负载02
   group-buy-market-02:
-    image: fuzhengwei/group-buy-market-app:3.0
+    image: system/pin-mate-buy-app:1.0-SNAPSHOT
     container_name: group-buy-market-app-02
     restart: on-failure
     ports:

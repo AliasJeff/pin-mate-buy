@@ -6,7 +6,7 @@
 # https://github.com/Sequel-Ace/Sequel-Ace
 #
 # 主机: 127.0.0.1 (MySQL 8.0.42)
-# 数据库: pay-hub
+# 数据库: alias-payhub
 # 生成时间: 2025-08-03 23:51:24 +0000
 # ************************************************************
 
@@ -19,8 +19,8 @@ SET NAMES utf8mb4;
 /*!40101 SET @OLD_SQL_MODE='NO_AUTO_VALUE_ON_ZERO', SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
-CREATE database if NOT EXISTS `pay-hub` default character set utf8mb4 ;
-use `pay-hub`;
+CREATE database if NOT EXISTS `alias-payhub` default character set utf8mb4 ;
+use `alias-payhub`;
 
 # 转储表 pay_order
 # ------------------------------------------------------------
