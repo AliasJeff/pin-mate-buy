@@ -59,7 +59,7 @@ public class MarketIndexController implements IMarketIndexService {
             Long activityId = groupBuyActivityDiscountVO.getActivityId();
 
             // 2. 查询拼单组队
-            List<UserGroupBuyOrderDetailEntity> userGroupBuyOrderDetailEntities = indexGroupBuyMarketService.queryInProgressUserGroupBuyOrderDetailList(activityId, requestDTO.getUserId(), 3, 5);
+            List<UserGroupBuyOrderDetailEntity> userGroupBuyOrderDetailEntities = indexGroupBuyMarketService.queryInProgressUserGroupBuyOrderDetailList(activityId, requestDTO.getUserId(), 1, 3);
 
             // 3. 统计拼单数据
             TeamStatisticVO teamStatisticVO = indexGroupBuyMarketService.queryTeamStatisticByActivityId(activityId);
