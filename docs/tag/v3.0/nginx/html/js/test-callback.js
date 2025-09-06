@@ -73,10 +73,17 @@ function executeTestCallback(outTradeNo) {
     })
     .then(data => {
         console.log('API响应:', data);
-        showResult(data, true);
+        if (data.code === '0000') {
+            showResult(data, true);
+        } else {
+            const errorMessage = data.info || data.message || '回调测试失败';
+            AppUtils.showToast(errorMessage, 'error');
+            showResult(data, false);
+        }
     })
     .catch(error => {
         console.error('请求失败:', error);
+        AppUtils.showToast('网络错误，请稍后重试', 'error');
         showResult({
             code: 'ERROR',
             info: '请求失败',
@@ -124,17 +131,8 @@ function showResult(data, isSuccess) {
 
 // 显示错误提示
 function showError(message) {
-    const resultSection = document.getElementById('resultSection');
-    const resultContent = document.getElementById('resultContent');
-    
-    resultContent.textContent = `❌ 输入错误\n\n${message}`;
-    resultSection.className = 'result-section result-error';
-    resultSection.style.display = 'block';
-    
-    // 3秒后自动隐藏
-    setTimeout(() => {
-        resultSection.style.display = 'none';
-    }, 3000);
+    // 使用统一的 toast 提示
+    AppUtils.showToast(message, 'warning');
 }
 
 // 获取API基础URL
@@ -161,9 +159,10 @@ function copyResult() {
     
     if (navigator.clipboard) {
         navigator.clipboard.writeText(text).then(() => {
-            showToast('结果已复制到剪贴板');
+            AppUtils.showToast('结果已复制到剪贴板', 'success');
         }).catch(err => {
             console.error('复制失败:', err);
+            AppUtils.showToast('复制失败', 'error');
         });
     } else {
         // 兼容旧浏览器
@@ -172,46 +171,18 @@ function copyResult() {
         document.body.appendChild(textArea);
         textArea.select();
         try {
-            document.execCommand('copy');
-            showToast('结果已复制到剪贴板');
+            const successful = document.execCommand('copy');
+            if (successful) {
+                AppUtils.showToast('结果已复制到剪贴板', 'success');
+            } else {
+                AppUtils.showToast('复制失败', 'error');
+            }
         } catch (err) {
             console.error('复制失败:', err);
+            AppUtils.showToast('复制失败', 'error');
         }
         document.body.removeChild(textArea);
     }
 }
 
-// 显示提示消息
-function showToast(message) {
-    // 创建提示元素
-    const toast = document.createElement('div');
-    toast.textContent = message;
-    toast.style.cssText = `
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        background: #333;
-        color: white;
-        padding: 12px 20px;
-        border-radius: 6px;
-        z-index: 1000;
-        font-size: 14px;
-        opacity: 0;
-        transition: opacity 0.3s ease;
-    `;
-    
-    document.body.appendChild(toast);
-    
-    // 显示动画
-    setTimeout(() => {
-        toast.style.opacity = '1';
-    }, 100);
-    
-    // 3秒后移除
-    setTimeout(() => {
-        toast.style.opacity = '0';
-        setTimeout(() => {
-            document.body.removeChild(toast);
-        }, 300);
-    }, 3000);
-}
+// 注意：showToast方法现在使用统一的AppUtils.showToast

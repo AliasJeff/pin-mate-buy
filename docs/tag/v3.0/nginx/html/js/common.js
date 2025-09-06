@@ -46,6 +46,83 @@ const AppUtils = {
     getUserIdFromUrl: function () {
         const urlParams = new URLSearchParams(window.location.search);
         return urlParams.get('userId') || this.getCurrentUserId();
+    },
+
+    // 显示Toast提示消息
+    showToast: function(message, type = 'error') {
+        // 移除已存在的提示
+        const existingToast = document.querySelector('.app-toast');
+        if (existingToast) {
+            existingToast.remove();
+        }
+
+        // 创建新的提示元素
+        const toast = document.createElement('div');
+        toast.className = `app-toast toast-${type}`;
+        toast.textContent = message;
+        
+        // 根据类型设置不同的样式
+        const colors = {
+            error: { bg: '#ff4757', color: '#ffffff' },
+            success: { bg: '#2ed573', color: '#ffffff' },
+            warning: { bg: '#ffa502', color: '#ffffff' },
+            info: { bg: '#5352ed', color: '#ffffff' }
+        };
+        
+        const typeColor = colors[type] || colors.error;
+        
+        toast.style.cssText = `
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: ${typeColor.bg};
+            color: ${typeColor.color};
+            padding: 12px 20px;
+            border-radius: 6px;
+            z-index: 9999;
+            font-size: 14px;
+            opacity: 0;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            max-width: 90%;
+            text-align: center;
+            font-weight: 500;
+        `;
+
+        document.body.appendChild(toast);
+
+        // 显示动画
+        setTimeout(() => {
+            toast.style.opacity = '1';
+            toast.style.transform = 'translateX(-50%) translateY(10px)';
+        }, 100);
+
+        // 3秒后移除
+        setTimeout(() => {
+            toast.style.opacity = '0';
+            toast.style.transform = 'translateX(-50%) translateY(-10px)';
+            setTimeout(() => {
+                if (toast.parentNode) {
+                    toast.parentNode.removeChild(toast);
+                }
+            }, 300);
+        }, 3000);
+    },
+
+    // API错误处理封装
+    handleApiResponse: function(response, successCallback, errorCallback) {
+        if (response.code === '0000') {
+            if (successCallback) {
+                successCallback(response.data);
+            }
+        } else {
+            const errorMessage = response.info || response.message || '操作失败，请重试';
+            this.showToast(errorMessage, 'error');
+            if (errorCallback) {
+                errorCallback(response);
+            }
+        }
     }
 };
 

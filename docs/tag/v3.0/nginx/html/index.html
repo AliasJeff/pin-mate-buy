@@ -190,7 +190,11 @@
         })
             .then(response => response.json())
             .then(res => {
-                if (res.code !== '0000') return;
+                if (res.code !== '0000') {
+                    const errorMessage = res.info || res.message || '获取商品信息失败';
+                    AppUtils.showToast(errorMessage, 'error');
+                    return;
+                }
 
                 const {activityId, goods, teamList, teamStatistic} = res.data;
                 const groupList = document.querySelector('.group-list');
@@ -239,7 +243,7 @@
                 groupBuyBtn.textContent = `拼单购买(￥${goods.payPrice.toFixed(0)})`;
                 groupBuyBtn.dataset.price = goods.payPrice;
 
-                // 绑定支付事件[拼单购买]
+                        // 绑定支付事件[拼单购买]
                 document.querySelectorAll('.group-btn, .group-buy').forEach(btn => {
                     btn.addEventListener('click', function () {
                         const button = this;
@@ -277,10 +281,14 @@
                                     document.body.insertAdjacentHTML('beforeend', json.data);
                                     showPaymentConfirm(goods.payPrice);
                                 } else {
-                                    console.error('Error:', json.info); // 输出错误信息
+                                    const errorMessage = json.info || json.message || '创建拼单订单失败';
+                                    AppUtils.showToast(errorMessage, 'error');
                                 }
                             })
-                            .catch(error => console.error('Error:', error));
+                            .catch(error => {
+                                console.error('Error:', error);
+                                AppUtils.showToast('网络错误，请稍后重试', 'error');
+                            });
 
                     });
                 });
@@ -311,10 +319,14 @@
                                     document.body.insertAdjacentHTML('beforeend', json.data);
                                     showPaymentConfirm(goods.payPrice);
                                 } else {
-                                    console.error('Error:', json.info); // 输出错误信息
+                                    const errorMessage = json.info || json.message || '创建单独购买订单失败';
+                                    AppUtils.showToast(errorMessage, 'error');
                                 }
                             })
-                            .catch(error => console.error('Error:', error));
+                            .catch(error => {
+                                console.error('Error:', error);
+                                AppUtils.showToast('网络错误，请稍后重试', 'error');
+                            });
                     });
                 });
 

@@ -82,11 +82,12 @@ class OrderListManager {
                 // 更新加载更多按钮状态
                 // this.updateLoadMoreButton();
             } else {
-                this.showError('加载订单列表失败: ' + (result.info || '未知错误'));
+                const errorMessage = result.info || result.message || '加载订单列表失败';
+                AppUtils.showToast(errorMessage, 'error');
             }
         } catch (error) {
             console.error('加载订单列表出错:', error);
-            this.showError('网络错误，请稍后重试');
+            AppUtils.showToast('网络错误，请稍后重试', 'error');
         } finally {
             this.loading = false;
             this.hideLoading();
@@ -227,16 +228,17 @@ class OrderListManager {
             const result = await response.json();
 
             if (result.code === '0000' && result.data && result.data.success) {
-                this.showSuccess('退单成功');
+                AppUtils.showToast('退单成功', 'success');
                 this.hideRefundModal();
                 // 重新加载订单列表
                 this.refreshOrderList();
             } else {
-                this.showError('退单失败: ' + (result.info || result.data?.message || '未知错误'));
+                const errorMessage = result.info || result.data?.message || '退单失败';
+                AppUtils.showToast(errorMessage, 'error');
             }
         } catch (error) {
             console.error('退单操作出错:', error);
-            this.showError('网络错误，请稍后重试');
+            AppUtils.showToast('网络错误，请稍后重试', 'error');
         } finally {
             this.hideLoading();
         }
@@ -258,25 +260,27 @@ class OrderListManager {
     }
 
     showError(message) {
-        alert('错误: ' + message);
+        // 使用统一的 toast 提示
+        AppUtils.showToast(message, 'error');
     }
 
     showSuccess(message) {
-        alert('成功: ' + message);
+        // 使用统一的 toast 提示
+        AppUtils.showToast(message, 'success');
     }
 
     // 复制订单号功能
     copyOrderId(orderId) {
-        if (navigator.clipboard) {
-            navigator.clipboard.writeText(orderId).then(() => {
-                this.showToast('订单号已复制到剪贴板');
-            }).catch(err => {
-                console.error('复制失败:', err);
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(orderId).then(() => {
+                    AppUtils.showToast('订单号已复制到剪贴板', 'success');
+                }).catch(err => {
+                    console.error('复制失败:', err);
+                    this.fallbackCopyTextToClipboard(orderId);
+                });
+            } else {
                 this.fallbackCopyTextToClipboard(orderId);
-            });
-        } else {
-            this.fallbackCopyTextToClipboard(orderId);
-        }
+            }
     }
 
     // 兼容旧浏览器的复制方法
@@ -293,13 +297,13 @@ class OrderListManager {
         try {
             const successful = document.execCommand('copy');
             if (successful) {
-                this.showToast('订单号已复制到剪贴板');
+                AppUtils.showToast('订单号已复制到剪贴板', 'success');
             } else {
-                this.showToast('复制失败，请手动复制');
+                AppUtils.showToast('复制失败，请手动复制', 'warning');
             }
         } catch (err) {
             console.error('复制失败:', err);
-            this.showToast('复制失败，请手动复制');
+            AppUtils.showToast('复制失败，请手动复制', 'warning');
         }
 
         document.body.removeChild(textArea);
@@ -420,11 +424,12 @@ class OrderListManager {
                 const form = document.querySelector('form');
                 if (form) form.submit();
             } else {
-                this.showError('获取支付信息失败: ' + (result.info || '未知错误'));
+                const errorMessage = result.info || result.message || '获取支付信息失败';
+                AppUtils.showToast(errorMessage, 'error');
             }
         } catch (error) {
             console.error('处理支付出错:', error);
-            this.showError('网络错误，请稍后重试');
+            AppUtils.showToast('网络错误，请稍后重试', 'error');
         } finally {
             this.hideLoading();
         }
@@ -465,50 +470,7 @@ class OrderListManager {
         document.body.removeChild(textarea);
     }
 
-    // 显示提示消息
-    showToast(message) {
-        // 移除已存在的提示
-        const existingToast = document.querySelector('.copy-toast');
-        if (existingToast) {
-            existingToast.remove();
-        }
-
-        // 创建新的提示元素
-        const toast = document.createElement('div');
-        toast.className = 'copy-toast';
-        toast.textContent = message;
-        toast.style.cssText = `
-            position: fixed;
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: #333;
-            color: white;
-            padding: 12px 20px;
-            border-radius: 6px;
-            z-index: 1000;
-            font-size: 14px;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        `;
-
-        document.body.appendChild(toast);
-
-        // 显示动画
-        setTimeout(() => {
-            toast.style.opacity = '1';
-        }, 100);
-
-        // 3秒后移除
-        setTimeout(() => {
-            toast.style.opacity = '0';
-            setTimeout(() => {
-                if (toast.parentNode) {
-                    toast.parentNode.removeChild(toast);
-                }
-            }, 300);
-        }, 3000);
-    }
+    // 注意：showToast方法现在使用统一的AppUtils.showToast
 }
 
 // 页面加载完成后初始化
