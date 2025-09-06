@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 /**
- * 拼团活动状态枚举
+ * 拼单活动状态枚举
  */
 @Getter
 @AllArgsConstructor

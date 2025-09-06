@@ -6,7 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * @description 拼团交易，过滤反馈实体
+ * @description 拼单交易，过滤反馈实体
  */
 @Data
 @Builder

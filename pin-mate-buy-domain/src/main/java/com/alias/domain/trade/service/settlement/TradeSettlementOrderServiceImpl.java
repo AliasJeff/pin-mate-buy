@@ -37,7 +37,7 @@ public class TradeSettlementOrderServiceImpl implements ITradeSettlementOrderSer
 
     @Override
     public TradePaySettlementEntity settlementMarketPayOrder(TradePaySuccessEntity tradePaySuccessEntity) throws Exception {
-        log.info("拼团交易-支付订单结算:{} outTradeNo:{}", tradePaySuccessEntity.getUserId(), tradePaySuccessEntity.getOutTradeNo());
+        log.info("拼单交易-支付订单结算:{} outTradeNo:{}", tradePaySuccessEntity.getUserId(), tradePaySuccessEntity.getOutTradeNo());
 
         // 1. 结算规则过滤
         TradeSettlementRuleFilterBackEntity tradeSettlementRuleFilterBackEntity = tradeSettlementRuleFilter.apply(
@@ -72,7 +72,7 @@ public class TradeSettlementOrderServiceImpl implements ITradeSettlementOrderSer
                 .tradePaySuccessEntity(tradePaySuccessEntity)
                 .build();
 
-        // 4. 拼团交易结算
+        // 4. 拼单交易结算
         NotifyTaskEntity notifyTaskEntity = repository.settlementMarketPayOrder(groupBuyTeamSettlementAggregate);
 
         // 5. 组队回调处理 - 处理失败也会有定时任务补偿，通过这样的方式，可以减轻任务调度，提高时效性
@@ -81,9 +81,9 @@ public class TradeSettlementOrderServiceImpl implements ITradeSettlementOrderSer
                 Map<String, Integer> notifyResultMap = null;
                 try {
                     notifyResultMap = tradeTaskService.execNotifyJob(notifyTaskEntity);
-                    log.info("回调通知拼团完结 result:{}", JSON.toJSONString(notifyResultMap));
+                    log.info("回调通知拼单完结 result:{}", JSON.toJSONString(notifyResultMap));
                 } catch (Exception e) {
-                    log.error("回调通知拼团完结失败 result:{}", JSON.toJSONString(notifyResultMap), e);
+                    log.error("回调通知拼单完结失败 result:{}", JSON.toJSONString(notifyResultMap), e);
                     throw new AppException(e.getMessage());
                 }
             });

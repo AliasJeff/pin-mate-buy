@@ -2,9 +2,9 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <title>拼单 - 商品详情页</title>
-    <link rel="stylesheet" href="css/index.css">
+    <link href="css/index.css" rel="stylesheet">
 
 </head>
 <body>
@@ -38,7 +38,7 @@
 
 <!-- 拼单列表容器 -->
 <div class="group-list">
-    <!-- 动态生成拼团列表 -->
+    <!-- 动态生成拼单列表 -->
 </div>
 
 <!-- 空白区域 -->
@@ -55,16 +55,16 @@
 <script src="js/common.js"></script>
 <script src="js/index.js"></script>
 <script>
-// 新增支付确认函数
-function showPaymentConfirm(price) {
-    // 创建遮罩层
-    const overlay = document.createElement('div');
-    overlay.className = 'payment-overlay';
+    // 新增支付确认函数
+    function showPaymentConfirm(price) {
+        // 创建遮罩层
+        const overlay = document.createElement('div');
+        overlay.className = 'payment-overlay';
 
-    // 创建弹窗内容
-    const modal = document.createElement('div');
-    modal.className = 'payment-modal';
-    modal.innerHTML = `
+        // 创建弹窗内容
+        const modal = document.createElement('div');
+        modal.className = 'payment-modal';
+        modal.innerHTML = `
         <h3>支付确认</h3>
         <p>商品金额：￥${price}</p>
         <p>买家账号：<span class="buyer-account">
@@ -85,127 +85,136 @@ function showPaymentConfirm(price) {
         </div>
     `;
 
-    // 确认支付处理
-    modal.querySelector('.confirm-btn').addEventListener('click', function() {
-        const form = document.querySelector('form');
-        if (form) form.submit();
-        overlay.remove();
-    });
+        // 确认支付处理
+        modal.querySelector('.confirm-btn').addEventListener('click', function () {
+            const form = document.querySelector('form');
+            if (form) form.submit();
+            overlay.remove();
+        });
 
-    // 取消支付处理
-    modal.querySelector('.cancel-btn').addEventListener('click', function() {
-        document.querySelectorAll('form').forEach(form => form.remove());
-        overlay.remove();
-    });
+        // 取消支付处理
+        modal.querySelector('.cancel-btn').addEventListener('click', function () {
+            document.querySelectorAll('form').forEach(form => form.remove());
+            overlay.remove();
+        });
 
-    // 添加复制功能
-    modal.querySelector('.copy-btn').addEventListener('click', function() {
-        const textToCopy = this.getAttribute('data-copy');
-        const button = this;
-        
-        navigator.clipboard.writeText(textToCopy).then(() => {
-            // 显示成功状态
+        // 添加复制功能
+        modal.querySelector('.copy-btn').addEventListener('click', function () {
+            const textToCopy = this.getAttribute('data-copy');
+            const button = this;
+
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                // ✅ 支持 clipboard API
+                navigator.clipboard.writeText(textToCopy).then(() => {
+                    showCopySuccess(button);
+                }).catch(err => {
+                    console.error('无法复制文本: ', err);
+                    fallbackCopy(textToCopy, button);
+                });
+            } else {
+                // ❌ 兼容处理
+                fallbackCopy(textToCopy, button);
+            }
+        });
+
+        function fallbackCopy(text, button) {
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            textarea.style.position = 'fixed';  // 防止滚动
+            textarea.style.left = '-999999px';
+            textarea.style.top = '-999999px';
+            document.body.appendChild(textarea);
+            textarea.focus();
+            textarea.select();
+            try {
+                const successful = document.execCommand('copy');
+                if (successful) {
+                    showCopySuccess(button);
+                } else {
+                    alert('复制失败，请手动选择文本');
+                }
+            } catch (err) {
+                console.error('execCommand 复制失败', err);
+                alert('复制失败，请手动选择文本');
+            }
+            document.body.removeChild(textarea);
+        }
+
+        function showCopySuccess(button) {
             const originalHtml = button.innerHTML;
-            button.innerHTML = `
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <polyline points="20,6 9,17 4,12"></polyline>
-                </svg>
-            `;
+            button.innerHTML = `✔️ 已复制`;
             button.style.color = '#48bb78';
-            
-            // 显示提示消息
-            const toast = document.createElement('div');
-            toast.className = 'copy-toast';
-            toast.textContent = '账号已复制到剪贴板';
-            document.body.appendChild(toast);
-            
-            setTimeout(() => {
-                toast.classList.add('show');
-            }, 10);
-            
-            setTimeout(() => {
-                toast.classList.remove('show');
-                setTimeout(() => {
-                    document.body.removeChild(toast);
-                }, 300);
-            }, 2000);
-            
-            // 恢复原始状态
             setTimeout(() => {
                 button.innerHTML = originalHtml;
                 button.style.color = '';
             }, 1500);
-        }).catch(err => {
-            console.error('无法复制文本: ', err);
-            alert('复制失败，请手动选择文本');
-        });
-    });
+        }
 
-    overlay.appendChild(modal);
-    document.body.appendChild(overlay);
-}
-
-document.addEventListener('DOMContentLoaded', function() {
-    // 使用公共配置
-    var sPayMallUrl = AppConfig.sPayMallUrl;
-    var groupBuyMarketUrl = AppConfig.groupBuyMarketUrl;
-    var goodsId = AppConfig.goodsId;
-
-    // 退出登录功能
-    const logoutBtn = document.getElementById('logout-btn');
-    logoutBtn.addEventListener('click', () => {
-        // 清除loginToken cookie
-        document.cookie = 'loginToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
-        // 重定向到登录页面
-        window.location.href = 'login.html';
-    });
-
-    // 获取用户信息
-    var userId = AppUtils.getCurrentUserId();
-    if (!userId) {
-        return;
+        overlay.appendChild(modal);
+        document.body.appendChild(overlay);
     }
 
-    // 请求接口数据
-    fetch(groupBuyMarketUrl + '/api/v1/gbm/index/query_group_buy_market_config', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-            userId: userId,
-            source: "s01",
-            channel: "c01",
-            goodsId: goodsId
+    document.addEventListener('DOMContentLoaded', function () {
+        // 使用公共配置
+        var sPayMallUrl = AppConfig.sPayMallUrl;
+        var groupBuyMarketUrl = AppConfig.groupBuyMarketUrl;
+        var goodsId = AppConfig.goodsId;
+
+        // 退出登录功能
+        const logoutBtn = document.getElementById('logout-btn');
+        logoutBtn.addEventListener('click', () => {
+            // 清除loginToken cookie
+            document.cookie = 'loginToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+            // 重定向到登录页面
+            window.location.href = 'login.html';
+        });
+
+        // 获取用户信息
+        var userId = AppUtils.getCurrentUserId();
+        if (!userId) {
+            return;
+        }
+
+        // 请求接口数据
+        fetch(groupBuyMarketUrl + '/api/v1/gbm/index/query_group_buy_market_config', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                userId: userId,
+                source: "s01",
+                channel: "c01",
+                goodsId: goodsId
+            })
         })
-    })
-    .then(response => response.json())
-    .then(res => {
-        if(res.code !== '0000') return;
+            .then(response => response.json())
+            .then(res => {
+                if (res.code !== '0000') return;
 
-        const { activityId, goods, teamList, teamStatistic } = res.data;
-        const groupList = document.querySelector('.group-list');
-        const promotionText = document.querySelector('.promotion-text');
+                const {activityId, goods, teamList, teamStatistic} = res.data;
+                const groupList = document.querySelector('.group-list');
+                const promotionText = document.querySelector('.promotion-text');
 
-        // 更新促销信息
-        promotionText.textContent = `直降 ¥${goods.deductionPrice.toFixed(0)}，${teamStatistic.allTeamUserCount}人再抢，参与马上抢到`;
+                // 更新促销信息
+                promotionText.textContent = `直降 ¥${goods.deductionPrice.toFixed(0)}，${teamStatistic.allTeamUserCount}人在抢，参与马上抢到`;
 
-        // 清空并生成拼团列表
-        groupList.innerHTML = '';
+                // 清空并生成拼单列表
+                groupList.innerHTML = '';
 
-        if (teamList.length === 0) {
-            groupList.innerHTML = `
+                if (teamList.length === 0) {
+                    groupList.innerHTML = `
                 <div class="group-item empty-tips">
                     <div class="tips-content">
                         暂无拼单记录，开始拼单吧！🎉
                     </div>
                 </div>
             `;
-        } else {
-            teamList.forEach(team => {
-                const remaining = team.targetCount - team.lockCount;
+                } else {
+                    teamList.forEach(team => {
+                        const remaining = team.targetCount - team.lockCount;
 
-                groupList.innerHTML += `
+                        groupList.innerHTML += `
                     <div class="group-item">
                         <div>
                             <div class="user-info" data-teamId="${team.teamId}" data-activityId="${team.activityId}">${obfuscateUserId(team.userId)}</div>
@@ -215,108 +224,108 @@ document.addEventListener('DOMContentLoaded', function() {
                             </div>
                         </div>
                         <div class="right">
-                            <button class="group-btn" data-price="${goods.payPrice.toFixed(0)}">参与拼团</button>
+                            <button class="group-btn" data-price="${goods.payPrice.toFixed(0)}">参与拼单</button>
                         </div>
                     </div>
                 `;
-            });
-        }
-
-        // 更新底部按钮
-        const buyAloneBtn = document.querySelector('.buy-alone');
-        const groupBuyBtn = document.querySelector('.group-buy');
-        buyAloneBtn.textContent = `单独购买(￥${goods.originalPrice.toFixed(0)})`;
-        buyAloneBtn.dataset.price = goods.originalPrice;
-        groupBuyBtn.textContent = `拼单购买(￥${goods.payPrice.toFixed(0)})`;
-        groupBuyBtn.dataset.price = goods.payPrice;
-
-        // 绑定支付事件[拼团购买]
-        document.querySelectorAll('.group-btn, .group-buy').forEach(btn => {
-            btn.addEventListener('click', function() {
-                const button = this;
-                const price = button.dataset.price;
-
-                // 获取拼团ID
-                let teamId = null;
-                if (this.classList.contains('group-btn')) {
-                    const groupItem = this.closest('.group-item');
-                    const userInfo = groupItem.querySelector('.user-info');
-                    teamId = userInfo.dataset.teamid;
+                    });
                 }
 
-                var url = sPayMallUrl + '/api/v1/alipay/create_pay_order';
+                // 更新底部按钮
+                const buyAloneBtn = document.querySelector('.buy-alone');
+                const groupBuyBtn = document.querySelector('.group-buy');
+                buyAloneBtn.textContent = `单独购买(￥${goods.originalPrice.toFixed(0)})`;
+                buyAloneBtn.dataset.price = goods.originalPrice;
+                groupBuyBtn.textContent = `拼单购买(￥${goods.payPrice.toFixed(0)})`;
+                groupBuyBtn.dataset.price = goods.payPrice;
 
-                var requestBody = {
-                     userId: userId,
-                     productId: goods.goodsId,
-                     teamId: teamId,
-                     activityId: activityId,
-                     marketType: 1
-                };
+                // 绑定支付事件[拼单购买]
+                document.querySelectorAll('.group-btn, .group-buy').forEach(btn => {
+                    btn.addEventListener('click', function () {
+                        const button = this;
+                        const price = button.dataset.price;
 
-                fetch(url, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(requestBody) // 将请求体转换为JSON字符串
-                })
-                .then(response => response.json()) // 解析JSON格式的响应
-                .then(json => {
-                    if (json.code === "0000") { // 假设成功的code是"0000"
-                        document.querySelectorAll('form').forEach(form => form.remove());
-                        document.body.insertAdjacentHTML('beforeend', json.data);
-                        showPaymentConfirm(goods.payPrice);
-                    } else {
-                        console.error('Error:', json.info); // 输出错误信息
-                    }
-                })
-                .catch(error => console.error('Error:', error));
+                        // 获取拼单ID
+                        let teamId = null;
+                        if (this.classList.contains('group-btn')) {
+                            const groupItem = this.closest('.group-item');
+                            const userInfo = groupItem.querySelector('.user-info');
+                            teamId = userInfo.dataset.teamid;
+                        }
+
+                        var url = sPayMallUrl + '/api/v1/alipay/create_pay_order';
+
+                        var requestBody = {
+                            userId: userId,
+                            productId: goods.goodsId,
+                            teamId: teamId,
+                            activityId: activityId,
+                            marketType: 1
+                        };
+
+                        fetch(url, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify(requestBody) // 将请求体转换为JSON字符串
+                        })
+                            .then(response => response.json()) // 解析JSON格式的响应
+                            .then(json => {
+                                if (json.code === "0000") { // 假设成功的code是"0000"
+                                    document.querySelectorAll('form').forEach(form => form.remove());
+                                    document.body.insertAdjacentHTML('beforeend', json.data);
+                                    showPaymentConfirm(goods.payPrice);
+                                } else {
+                                    console.error('Error:', json.info); // 输出错误信息
+                                }
+                            })
+                            .catch(error => console.error('Error:', error));
+
+                    });
+                });
+
+                // 绑定支付事件[单独购买]
+                document.querySelectorAll('.buy-alone').forEach(btn => {
+                    btn.addEventListener('click', function () {
+                        const button = this;
+                        const price = button.dataset.price;
+
+                        var requestBody = {
+                            userId: userId,
+                            productId: goods.goodsId,
+                            marketType: 0
+                        };
+
+                        fetch(sPayMallUrl + '/api/v1/alipay/create_pay_order', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify(requestBody) // 将请求体转换为JSON字符串
+                        })
+                            .then(response => response.json()) // 解析JSON格式的响应
+                            .then(json => {
+                                if (json.code === "0000") { // 假设成功的code是"0000"
+                                    document.querySelectorAll('form').forEach(form => form.remove());
+                                    document.body.insertAdjacentHTML('beforeend', json.data);
+                                    showPaymentConfirm(goods.payPrice);
+                                } else {
+                                    console.error('Error:', json.info); // 输出错误信息
+                                }
+                            })
+                            .catch(error => console.error('Error:', error));
+                    });
+                });
+
+                // 启动倒计时
+                document.querySelectorAll('.countdown').forEach(el => {
+                    new Countdown(el, el.textContent);
+                });
 
             });
-        });
-
-        // 绑定支付事件[单独购买]
-        document.querySelectorAll('.buy-alone').forEach(btn => {
-            btn.addEventListener('click', function() {
-                const button = this;
-                const price = button.dataset.price;
-
-                var requestBody = {
-                     userId: userId,
-                     productId: goods.goodsId,
-                     marketType: 0
-                };
-
-                fetch(sPayMallUrl + '/api/v1/alipay/create_pay_order', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(requestBody) // 将请求体转换为JSON字符串
-                })
-                .then(response => response.json()) // 解析JSON格式的响应
-                .then(json => {
-                    if (json.code === "0000") { // 假设成功的code是"0000"
-                        document.querySelectorAll('form').forEach(form => form.remove());
-                        document.body.insertAdjacentHTML('beforeend', json.data);
-                        showPaymentConfirm(goods.payPrice);
-                    } else {
-                        console.error('Error:', json.info); // 输出错误信息
-                    }
-                })
-                .catch(error => console.error('Error:', error));
-            });
-        });
-
-        // 启动倒计时
-        document.querySelectorAll('.countdown').forEach(el => {
-            new Countdown(el, el.textContent);
-        });
 
     });
-
-});
 </script>
 
 </body>

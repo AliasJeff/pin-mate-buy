@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 import java.math.BigDecimal;
 
 /**
- * @description 拼团，预购订单营销实体对象
+ * @description 拼单，预购订单营销实体对象
  */
 @Data
 @Builder

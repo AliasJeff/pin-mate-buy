@@ -61,7 +61,7 @@ public class MarketNode2CompletableFuture extends MarketNode {
                     dynamicContext.setSkuVO(skuVOCompletableFuture.join());
                 }).join();
 
-        log.info("拼团商品查询试算服务-MarketNode userId:{} 异步线程加载数据「GroupBuyActivityDiscountVO、SkuVO」完成", requestParameter.getUserId());
+        log.info("拼单商品查询试算服务-MarketNode userId:{} 异步线程加载数据「GroupBuyActivityDiscountVO、SkuVO」完成", requestParameter.getUserId());
     }
 }
 

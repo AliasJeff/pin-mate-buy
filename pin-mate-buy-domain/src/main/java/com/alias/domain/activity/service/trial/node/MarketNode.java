@@ -71,12 +71,12 @@ public class MarketNode extends AbstractGroupBuyMarketSupport<MarketProductEntit
         dynamicContext.setGroupBuyActivityDiscountVO(groupBuyActivityDiscountVOFutureTask.get(timeout, TimeUnit.MILLISECONDS));
         dynamicContext.setSkuVO(querySkuFutureTask.get(timeout, TimeUnit.MILLISECONDS));
 
-        log.info("拼团商品查询试算服务-MarketNode userId:{} 异步线程加载数据「GroupBuyActivityDiscountVO、SkuVO」完成", marketProductEntity.getUserId());
+        log.info("拼单商品查询试算服务-MarketNode userId:{} 异步线程加载数据「GroupBuyActivityDiscountVO、SkuVO」完成", marketProductEntity.getUserId());
     }
 
     @Override
     protected TrialBalanceEntity doApply(MarketProductEntity requestParameters, DefaultActivityStrategyFactory.DynamicContext dynamicContext) throws Exception {
-        log.info("拼团商品查询试算服务-MarketNode userId:{} requestParameter:{}", requestParameters.getUserId(), JSON.toJSONString(requestParameters));
+        log.info("拼单商品查询试算服务-MarketNode userId:{} requestParameter:{}", requestParameters.getUserId(), JSON.toJSONString(requestParameters));
 
         // 获取上下文数据
         GroupBuyActivityDiscountVO groupBuyActivityDiscountVO = dynamicContext.getGroupBuyActivityDiscountVO();
@@ -106,7 +106,7 @@ public class MarketNode extends AbstractGroupBuyMarketSupport<MarketProductEntit
 
     @Override
     public StrategyHandler<MarketProductEntity, DefaultActivityStrategyFactory.DynamicContext, TrialBalanceEntity> get(MarketProductEntity requestParameters, DefaultActivityStrategyFactory.DynamicContext dynamicContext) throws Exception {
-        // 不存在配置的拼团活动，走异常节点
+        // 不存在配置的拼单活动，走异常节点
         if (null == dynamicContext.getGroupBuyActivityDiscountVO() || null == dynamicContext.getSkuVO() || null == dynamicContext.getDeductionPrice()) {
             return errorNode;
         }

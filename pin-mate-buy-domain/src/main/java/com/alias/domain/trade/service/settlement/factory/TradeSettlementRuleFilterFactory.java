@@ -48,7 +48,7 @@ public class TradeSettlementRuleFilterFactory {
     public static class DynamicContext {
         // 订单营销实体对象
         private MarketPayOrderEntity marketPayOrderEntity;
-        // 拼团组队实体对象
+        // 拼单组队实体对象
         private GroupBuyTeamEntity groupBuyTeamEntity;
     }
 

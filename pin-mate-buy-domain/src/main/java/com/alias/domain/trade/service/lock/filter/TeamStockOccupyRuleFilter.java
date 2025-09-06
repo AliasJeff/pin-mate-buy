@@ -28,7 +28,7 @@ public class TeamStockOccupyRuleFilter implements ILogicHandler<TradeLockRuleCom
     public TradeLockRuleFilterBackEntity apply(TradeLockRuleCommandEntity requestParameter, TradeLockRuleFilterFactory.DynamicContext dynamicContext) throws Exception {
         log.info("交易规则过滤-组队库存校验{} activityId:{}", requestParameter.getUserId(), requestParameter.getActivityId());
 
-        // 1. teamId 为空，则为首次开团，不做拼团组队目标量库存限制
+        // 1. teamId 为空，则为首次开团，不做拼单组队目标量库存限制
         String teamId = requestParameter.getTeamId();
         if (StringUtils.isBlank(teamId)) {
             return TradeLockRuleFilterBackEntity.builder()

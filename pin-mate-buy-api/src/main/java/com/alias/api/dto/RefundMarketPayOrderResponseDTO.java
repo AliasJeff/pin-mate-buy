@@ -6,7 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * @description 营销拼团退单响应对象
+ * @description 营销拼单退单响应对象
  */
 @Data
 @Builder

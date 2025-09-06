@@ -66,9 +66,9 @@ public class GoodsMarketResponseDTO {
         private Integer completeCount;
         // 锁单数量
         private Integer lockCount;
-        // 拼团开始时间 - 参与拼团时间
+        // 拼单开始时间 - 参与拼单时间
         private Date validStartTime;
-        // 拼团结束时间 - 拼团有效时长
+        // 拼单结束时间 - 拼单有效时长
         private Date validEndTime;
         // 倒计时(字符串) validEndTime - validStartTime
         private String validTimeCountdown;

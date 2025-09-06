@@ -26,11 +26,11 @@ public class DataNodeFilter implements ILogicHandler<TradeRefundCommandEntity, T
     public TradeRefundBehaviorEntity apply(TradeRefundCommandEntity tradeRefundCommandEntity, TradeRefundRuleFilterFactory.DynamicContext dynamicContext) throws Exception {
         log.info("逆向流程-退单操作，数据加载节点 userId:{} outTradeNo:{}", tradeRefundCommandEntity.getUserId(), tradeRefundCommandEntity.getOutTradeNo());
 
-        // 1. 查询外部交易单，组队id、orderId、拼团状态
+        // 1. 查询外部交易单，组队id、orderId、拼单状态
         MarketPayOrderEntity marketPayOrderEntity = repository.queryMarketPayOrderEntityByOutTradeNo(tradeRefundCommandEntity.getUserId(), tradeRefundCommandEntity.getOutTradeNo());
         String teamId = marketPayOrderEntity.getTeamId();
 
-        // 2. 查询拼团状态
+        // 2. 查询拼单状态
         GroupBuyTeamEntity groupBuyTeamEntity = repository.queryGroupBuyTeamByTeamId(teamId);
 
         // 3. 写入上下文；如果查询数据是比较多的，可以参考 MarketNode2CompletableFuture 通过多线程进行加载

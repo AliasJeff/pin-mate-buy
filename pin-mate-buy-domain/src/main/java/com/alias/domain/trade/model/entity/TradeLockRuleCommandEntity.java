@@ -6,7 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * @description 拼团交易命令实体
+ * @description 拼单交易命令实体
  */
 @Data
 @Builder

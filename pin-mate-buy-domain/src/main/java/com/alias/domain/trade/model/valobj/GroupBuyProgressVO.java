@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 /**
- * @description 拼团进度值对象
+ * @description 拼单进度值对象
  */
 @Getter
 @Builder

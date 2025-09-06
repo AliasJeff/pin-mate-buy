@@ -29,7 +29,7 @@ public class TradeTaskService implements ITradeTaskService {
 
     @Override
     public Map<String, Integer> execNotifyJob() throws Exception {
-        log.info("拼团交易-执行回调通知任务");
+        log.info("拼单交易-执行回调通知任务");
 
         // 查询未执行任务
         List<NotifyTaskEntity> notifyTaskEntityList = repository.queryUnExecutedNotifyTaskList();
@@ -39,14 +39,14 @@ public class TradeTaskService implements ITradeTaskService {
 
     @Override
     public Map<String, Integer> execNotifyJob(String teamId) throws Exception {
-        log.info("拼团交易-执行回调通知回调，指定 teamId:{}", teamId);
+        log.info("拼单交易-执行回调通知回调，指定 teamId:{}", teamId);
         List<NotifyTaskEntity> notifyTaskEntityList = repository.queryUnExecutedNotifyTaskList(teamId);
         return execNotifyJob(notifyTaskEntityList);
     }
 
     @Override
     public Map<String, Integer> execNotifyJob(NotifyTaskEntity notifyTaskEntity) throws Exception {
-        log.info("拼团交易-执行回调通知回调，指定 teamId:{} notifyTaskEntity:{}", notifyTaskEntity.getTeamId(), JSON.toJSONString(notifyTaskEntity));
+        log.info("拼单交易-执行回调通知回调，指定 teamId:{} notifyTaskEntity:{}", notifyTaskEntity.getTeamId(), JSON.toJSONString(notifyTaskEntity));
         return execNotifyJob(Collections.singletonList(notifyTaskEntity));
     }
 

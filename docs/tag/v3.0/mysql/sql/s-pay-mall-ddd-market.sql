@@ -38,7 +38,7 @@ CREATE TABLE `pay_order` (
   `status` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '订单状态；create-创建完成、pay_wait-等待支付、pay_success-支付成功、deal_done-交易完成、close-订单关单、wait_refund-待退款',
   `pay_url` varchar(2014) DEFAULT NULL COMMENT '支付信息',
   `pay_time` datetime DEFAULT NULL COMMENT '支付时间',
-  `market_type` tinyint(1) DEFAULT NULL COMMENT '营销类型；0无营销、1拼团营销',
+  `market_type` tinyint(1) DEFAULT NULL COMMENT '营销类型；0无营销、1拼单营销',
   `market_deduction_amount` decimal(8,2) DEFAULT NULL COMMENT '营销金额；优惠金额',
   `pay_amount` decimal(8,2) NOT NULL COMMENT '支付金额',
   `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',

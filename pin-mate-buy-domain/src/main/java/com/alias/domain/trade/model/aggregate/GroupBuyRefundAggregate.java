@@ -9,7 +9,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * 拼团退单聚合
+ * 拼单退单聚合
  */
 @Data
 @Builder
@@ -28,7 +28,7 @@ public class GroupBuyRefundAggregate {
     private GroupBuyProgressVO groupBuyProgress;
 
     /**
-     * 拼团枚举
+     * 拼单枚举
      */
     private GroupBuyOrderEnumVO groupBuyOrderEnumVO;
 

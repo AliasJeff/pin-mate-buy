@@ -24,7 +24,7 @@ public class PaidTeam2RefundStrategy extends AbstractRefundOrderStrategy {
         GroupBuyTeamEntity groupBuyTeamEntity = repository.queryGroupBuyTeamByTeamId(tradeRefundOrderEntity.getTeamId());
         Integer completeCount = groupBuyTeamEntity.getCompleteCount();
 
-        // 最后一笔也退单，则更新拼团订单为失败
+        // 最后一笔也退单，则更新拼单订单为失败
         GroupBuyOrderEnumVO groupBuyOrderEnumVO = 1 == completeCount ? GroupBuyOrderEnumVO.FAIL : GroupBuyOrderEnumVO.COMPLETE_FAIL;
 
         // 1. 退单，已支付&已成团

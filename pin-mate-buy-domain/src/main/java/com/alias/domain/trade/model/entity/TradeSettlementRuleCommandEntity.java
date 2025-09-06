@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 import java.util.Date;
 
 /**
- * @description 拼团交易结算规则命令
+ * @description 拼单交易结算规则命令
  */
 @Data
 @Builder

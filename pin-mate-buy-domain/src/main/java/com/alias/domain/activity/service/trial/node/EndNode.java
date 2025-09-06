@@ -22,7 +22,7 @@ public class EndNode extends AbstractGroupBuyMarketSupport<MarketProductEntity, 
 
     @Override
     protected TrialBalanceEntity doApply(MarketProductEntity requestParameters, DefaultActivityStrategyFactory.DynamicContext dynamicContext) throws Exception {
-        log.info("拼团商品查询试算服务-EndNode userId:{} requestParameter:{}", requestParameters.getUserId(), JSON.toJSONString(requestParameters));
+        log.info("拼单商品查询试算服务-EndNode userId:{} requestParameter:{}", requestParameters.getUserId(), JSON.toJSONString(requestParameters));
 
         GroupBuyActivityDiscountVO groupBuyActivityDiscountVO = dynamicContext.getGroupBuyActivityDiscountVO();
         SkuVO skuVO = dynamicContext.getSkuVO();

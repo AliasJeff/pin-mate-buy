@@ -9,7 +9,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 
 /**
- * 抽象的拼团营销支撑类
+ * 抽象的拼单营销支撑类
  */
 public abstract class AbstractGroupBuyMarketSupport<MarketProductEntity, DynamicParameters, TrialBalanceEntity> extends AbstractMultiThreadStrategyRouter<MarketProductEntity, DefaultActivityStrategyFactory.DynamicContext, TrialBalanceEntity> {
 

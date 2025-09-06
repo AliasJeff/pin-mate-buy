@@ -25,7 +25,7 @@ public interface IMarketTradeService {
     Response<SettlementMarketPayOrderResponseDTO> settlementMarketPayOrder(SettlementMarketPayOrderRequestDTO requestDTO);
 
     /**
-     * 营销拼团退单
+     * 营销拼单退单
      *
      * @param requestDTO 退单请求信息
      * @return 退单结果信息

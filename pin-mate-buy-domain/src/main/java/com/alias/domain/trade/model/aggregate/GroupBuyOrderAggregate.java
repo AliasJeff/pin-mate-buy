@@ -9,7 +9,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * @description 拼团订单聚合对象
+ * @description 拼单订单聚合对象
  */
 @Data
 @Builder
@@ -30,7 +30,7 @@ public class GroupBuyOrderAggregate {
      */
     private PayDiscountEntity payDiscountEntity;
     /**
-     * 已参与拼团量
+     * 已参与拼单量
      */
     private Integer userTakeOrderCount;
 

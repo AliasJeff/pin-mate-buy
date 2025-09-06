@@ -34,7 +34,7 @@ public class IndexGroupBuyMarketServiceImpl implements IIndexGroupBuyMarketServi
     public List<UserGroupBuyOrderDetailEntity> queryInProgressUserGroupBuyOrderDetailList(Long activityId, String userId, Integer ownerCount, Integer randomCount) {
         List<UserGroupBuyOrderDetailEntity> unionAllList = new ArrayList<>();
 
-        // 查询个人拼团数据
+        // 查询个人拼单数据
         if (0 != ownerCount) {
             List<UserGroupBuyOrderDetailEntity> ownerList = repository.queryInProgressUserGroupBuyOrderDetailListByOwner(activityId, userId, ownerCount);
             if (null != ownerList && !ownerList.isEmpty()) {
@@ -42,7 +42,7 @@ public class IndexGroupBuyMarketServiceImpl implements IIndexGroupBuyMarketServi
             }
         }
 
-        // 查询其他非个人拼团
+        // 查询其他非个人拼单
         if (0 != randomCount) {
             List<UserGroupBuyOrderDetailEntity> randomList = repository.queryInProgressUserGroupBuyOrderDetailListByRandom(activityId, userId, randomCount);
             if (null != randomList && !randomList.isEmpty()) {

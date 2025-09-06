@@ -9,7 +9,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * @description 拼团组队结算聚合
+ * @description 拼单组队结算聚合
  */
 @Data
 @Builder
@@ -22,7 +22,7 @@ public class GroupBuyTeamSettlementAggregate {
      */
     private UserEntity userEntity;
     /**
-     * 拼团组队实体对象
+     * 拼单组队实体对象
      */
     private GroupBuyTeamEntity groupBuyTeamEntity;
     /**

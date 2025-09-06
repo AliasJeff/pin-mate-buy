@@ -37,12 +37,12 @@ public class RefundSuccessTopicListener {
             )
     )
     public void listener(String message) {
-        log.info("接收消息（退单成功）- 恢复拼团队伍锁单量:{}", message);
+        log.info("接收消息（退单成功）- 恢复拼单队伍锁单量:{}", message);
         TeamRefundSuccess teamRefundSuccess = JSON.parseObject(message, TeamRefundSuccess.class);
         try {
             tradeRefundOrderService.restoreTeamLockStock(teamRefundSuccess);
         } catch (Exception e) {
-            log.info("接收消息（退单成功）- 恢复拼团队伍锁单量失败:{}", message, e);
+            log.info("接收消息（退单成功）- 恢复拼单队伍锁单量失败:{}", message, e);
             // 抛异常，mq消息会重试
             throw new RuntimeException(e);
         }

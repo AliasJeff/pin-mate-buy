@@ -12,8 +12,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public enum TagScopeEnum {
 
-    VISIBLE(true, false, "是否可看见拼团"),
-    ENABLE(true, false, "是否可参与拼团"),
+    VISIBLE(true, false, "是否可看见拼单"),
+    ENABLE(true, false, "是否可参与拼单"),
     ;
 
     private Boolean allow;

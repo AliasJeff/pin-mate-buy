@@ -66,11 +66,11 @@ public class GroupBuyOrder {
      */
     private Integer status;
     /**
-     * 拼团开始时间 - 参与拼团时间
+     * 拼单开始时间 - 参与拼单时间
      */
     private Date validStartTime;
     /**
-     * 拼团结束时间 - 拼团有效时长
+     * 拼单结束时间 - 拼单有效时长
      */
     private Date validEndTime;
     /**

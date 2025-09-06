@@ -20,11 +20,11 @@ public class ErrorNode extends AbstractGroupBuyMarketSupport<MarketProductEntity
 
     @Override
     protected TrialBalanceEntity doApply(MarketProductEntity requestParameter, DefaultActivityStrategyFactory.DynamicContext dynamicContext) throws Exception {
-        log.info("拼团商品查询试算服务-NoMarketNode userId:{} requestParameter:{}", requestParameter.getUserId(), JSON.toJSONString(requestParameter));
+        log.info("拼单商品查询试算服务-NoMarketNode userId:{} requestParameter:{}", requestParameter.getUserId(), JSON.toJSONString(requestParameter));
 
         // 无营销配置
         if (null == dynamicContext.getGroupBuyActivityDiscountVO() || null == dynamicContext.getSkuVO()) {
-            log.error("商品无拼团营销配置 {}", requestParameter.getGoodsId());
+            log.error("商品无拼单营销配置 {}", requestParameter.getGoodsId());
             throw new AppException(ResponseCode.E0002.getCode(), ResponseCode.E0002.getInfo());
         }
 

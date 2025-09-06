@@ -22,7 +22,7 @@ public class TestApiClientController {
      */
     @RequestMapping(value = "group_buy_notify", method = RequestMethod.POST)
     public String groupBuyNotify(@RequestBody NotifyRequestDTO notifyRequestDTO) {
-        log.info("模拟测试第三方服务接收拼团回调 {}", JSON.toJSONString(notifyRequestDTO));
+        log.info("模拟测试第三方服务接收拼单回调 {}", JSON.toJSONString(notifyRequestDTO));
 
         return "success";
     }

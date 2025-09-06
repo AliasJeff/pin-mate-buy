@@ -54,7 +54,7 @@ services:
         max-file: "3"
     networks:
       - my-network
-  # 拼团，负载01
+  # 拼单，负载01
   # 原镜像，需要自己构建；fuzhengwei/group-buy-market-app:3.0
   # 代理镜像（小傅哥打包好的，可以直接使用）； registry.cn-hangzhou.aliyuncs.com/xfg-studio/group-buy-market-app:3.0
   group-buy-market-01:
@@ -90,7 +90,7 @@ services:
         max-file: "3"
     networks:
       - my-network
-  # # 拼团，负载02
+  # # 拼单，负载02
   group-buy-market-02:
     image: system/pin-mate-buy-app:1.0-SNAPSHOT
     container_name: group-buy-market-app-02

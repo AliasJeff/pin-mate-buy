@@ -13,7 +13,7 @@ import java.util.Date;
 import java.util.Objects;
 
 /**
- * 拼团活动营销配置值对象
+ * 拼单活动营销配置值对象
  */
 @Getter
 @Builder
@@ -46,19 +46,19 @@ public class GroupBuyActivityDiscountVO {
      */
     private GroupBuyDiscount groupBuyDiscount;
     /**
-     * 拼团方式（0自动成团、1达成目标拼团）
+     * 拼单方式（0自动成团、1达成目标拼单）
      */
     private Integer groupType;
     /**
-     * 拼团次数限制
+     * 拼单次数限制
      */
     private Integer takeLimitCount;
     /**
-     * 拼团目标
+     * 拼单目标
      */
     private Integer target;
     /**
-     * 拼团时长（分钟）
+     * 拼单时长（分钟）
      */
     private Integer validTime;
     /**

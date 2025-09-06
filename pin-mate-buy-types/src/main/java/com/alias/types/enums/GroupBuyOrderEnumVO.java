@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 /**
- * @description 拼团订单枚举
+ * @description 拼单订单枚举
  */
 @Getter
 @AllArgsConstructor

@@ -105,7 +105,7 @@ public class TradeRepository implements ITradeRepository {
             // 使用 RandomStringUtils.randomNumeric 替代公司里使用的雪花算法UUID
             teamId = RandomStringUtils.randomNumeric(8);
 
-            // 构建拼团订单
+            // 构建拼单订单
             GroupBuyOrder groupBuyOrder = GroupBuyOrder.builder()
                     .teamId(teamId)
                     .activityId(payActivityEntity.getActivityId())
@@ -126,7 +126,7 @@ public class TradeRepository implements ITradeRepository {
             // 写入记录
             groupBuyOrderDao.insert(groupBuyOrder);
         } else {
-            // 更新记录 - 如果更新记录不等于1，则表示拼团已满，抛出异常
+            // 更新记录 - 如果更新记录不等于1，则表示拼单已满，抛出异常
             int updateAddTargetCount = groupBuyOrderDao.updateAddLockCount(teamId);
             if (1 != updateAddTargetCount) {
                 throw new AppException(ResponseCode.E0005);
@@ -161,7 +161,7 @@ public class TradeRepository implements ITradeRepository {
                 .build();
 
         try {
-            // 写入拼团记录
+            // 写入拼单记录
             groupBuyOrderListDao.insert(groupBuyOrderListReq);
         } catch (DuplicateKeyException e) {
             throw new AppException(ResponseCode.INDEX_EXCEPTION);
@@ -249,7 +249,7 @@ public class TradeRepository implements ITradeRepository {
         NotifyConfigVO notifyConfigVO = groupBuyTeamEntity.getNotifyConfigVO();
         TradePaySuccessEntity tradePaySuccessEntity = groupBuyTeamSettlementAggregate.getTradePaySuccessEntity();
 
-        // 1. 更新拼团订单明细状态
+        // 1. 更新拼单订单明细状态
         GroupBuyOrderList groupBuyOrderListReq = new GroupBuyOrderList();
         groupBuyOrderListReq.setUserId(userEntity.getUserId());
         groupBuyOrderListReq.setOutTradeNo(tradePaySuccessEntity.getOutTradeNo());
@@ -258,23 +258,23 @@ public class TradeRepository implements ITradeRepository {
             throw new AppException(ResponseCode.UPDATE_ZERO);
         }
 
-        // 2. 更新拼团达成数量
+        // 2. 更新拼单达成数量
         int updateAddCount = groupBuyOrderDao.updateAddCompleteCount(groupBuyTeamEntity.getTeamId());
         if (1 != updateAddCount) {
             throw new AppException(ResponseCode.UPDATE_ZERO);
         }
 
-        // 3. 更新拼团完成状态
+        // 3. 更新拼单完成状态
         if (groupBuyTeamEntity.getTargetCount() - groupBuyTeamEntity.getCompleteCount() == 1) {
             int updateOrderStatusCount = groupBuyOrderDao.updateOrderStatus2COMPLETE(groupBuyTeamEntity.getTeamId());
             if (1 != updateOrderStatusCount) {
                 throw new AppException(ResponseCode.UPDATE_ZERO);
             }
 
-            // 查询拼团交易完成外部单号列表
+            // 查询拼单交易完成外部单号列表
             List<String> outTradeNoList = groupBuyOrderListDao.queryGroupBuyCompleteOrderOutTradeNoListByTeamId(groupBuyTeamEntity.getTeamId());
 
-            // 拼团完成写入回调任务记录
+            // 拼单完成写入回调任务记录
             NotifyTask notifyTask = new NotifyTask();
             notifyTask.setActivityId(groupBuyTeamEntity.getActivityId());
             notifyTask.setTeamId(groupBuyTeamEntity.getTeamId());
@@ -413,7 +413,7 @@ public class TradeRepository implements ITradeRepository {
 
     @Override
     public void recoveryTeamStock(String recoveryTeamStockKey, Integer validTime) {
-        // 首次组队拼团，是没有 teamId 的，所以不需要这个做处理。
+        // 首次组队拼单，是没有 teamId 的，所以不需要这个做处理。
         if (StringUtils.isBlank(recoveryTeamStockKey)) return;
 
         redisService.incr(recoveryTeamStockKey);
@@ -560,7 +560,7 @@ public class TradeRepository implements ITradeRepository {
         groupBuyOrderReq.setLockCount(groupBuyProgress.getLockCount());
         groupBuyOrderReq.setCompleteCount(groupBuyProgress.getCompleteCount());
 
-        // 根据拼团组队量更新状态。组队最后一个人->更新组队失败，组队还有其他人->更新组队完成含退单
+        // 根据拼单组队量更新状态。组队最后一个人->更新组队失败，组队还有其他人->更新组队完成含退单
         if (GroupBuyOrderEnumVO.COMPLETE_FAIL.equals(groupBuyOrderEnumVO)) {
             int updateTeamPaid2Refund = groupBuyOrderDao.paidTeam2Refund(groupBuyOrderReq);
             if (1 != updateTeamPaid2Refund) {

@@ -13,7 +13,7 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 /**
- * @description 拼团完结回调通知任务；拼团回调任务表，实际场景会定时清理数据结转，不会有太多数据挤压
+ * @description 拼单完结回调通知任务；拼单回调任务表，实际场景会定时清理数据结转，不会有太多数据挤压
  */
 @Slf4j
 @Service

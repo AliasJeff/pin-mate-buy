@@ -135,7 +135,7 @@ public class ActivityRepository extends AbstractRepository implements IActivityR
 
     @Override
     public List<UserGroupBuyOrderDetailEntity> queryInProgressUserGroupBuyOrderDetailListByOwner(Long activityId, String userId, Integer ownerCount) {
-        // 1. 根据用户ID、活动ID，查询用户参与的拼团队伍
+        // 1. 根据用户ID、活动ID，查询用户参与的拼单队伍
         GroupBuyOrderList groupBuyOrderListReq = new GroupBuyOrderList();
         groupBuyOrderListReq.setActivityId(activityId);
         groupBuyOrderListReq.setUserId(userId);
@@ -183,7 +183,7 @@ public class ActivityRepository extends AbstractRepository implements IActivityR
 
     @Override
     public List<UserGroupBuyOrderDetailEntity> queryInProgressUserGroupBuyOrderDetailListByRandom(Long activityId, String userId, Integer randomCount) {
-        // 1. 根据用户ID、活动ID，查询用户参与的拼团队伍
+        // 1. 根据用户ID、活动ID，查询用户参与的拼单队伍
         GroupBuyOrderList groupBuyOrderListReq = new GroupBuyOrderList();
         groupBuyOrderListReq.setActivityId(activityId);
         groupBuyOrderListReq.setUserId(userId);
@@ -238,7 +238,7 @@ public class ActivityRepository extends AbstractRepository implements IActivityR
 
     @Override
     public TeamStatisticVO queryTeamStatisticByActivityId(Long activityId) {
-        // 1. 根据活动ID查询拼团队伍
+        // 1. 根据活动ID查询拼单队伍
         List<GroupBuyOrderList> groupBuyOrderLists = groupBuyOrderListDao.queryInProgressUserGroupBuyOrderDetailListByActivityId(activityId);
 
         if (null == groupBuyOrderLists || groupBuyOrderLists.isEmpty()) {

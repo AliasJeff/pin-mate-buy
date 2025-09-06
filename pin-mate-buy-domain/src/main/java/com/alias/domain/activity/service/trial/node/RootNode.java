@@ -26,7 +26,7 @@ public class RootNode extends AbstractGroupBuyMarketSupport<MarketProductEntity,
 
     @Override
     protected TrialBalanceEntity doApply(MarketProductEntity requestParameters, DefaultActivityStrategyFactory.DynamicContext dynamicContext) throws Exception {
-        log.info("拼团商品查询试算服务-RootNode userId:{} requestParameter:{}", requestParameters.getUserId(), JSON.toJSONString(requestParameters));
+        log.info("拼单商品查询试算服务-RootNode userId:{} requestParameter:{}", requestParameters.getUserId(), JSON.toJSONString(requestParameters));
         // 参数判断
         if (StringUtils.isBlank(requestParameters.getUserId()) || StringUtils.isBlank(requestParameters.getGoodsId()) ||
                 StringUtils.isBlank(requestParameters.getSource()) || StringUtils.isBlank(requestParameters.getChannel())) {

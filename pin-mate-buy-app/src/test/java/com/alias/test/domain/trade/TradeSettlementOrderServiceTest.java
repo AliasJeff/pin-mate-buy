@@ -15,7 +15,7 @@ import java.util.Date;
 import java.util.concurrent.CountDownLatch;
 
 /**
- * @description 拼团交易结算服务测试
+ * @description 拼单交易结算服务测试
  */
 @Slf4j
 @RunWith(SpringRunner.class)

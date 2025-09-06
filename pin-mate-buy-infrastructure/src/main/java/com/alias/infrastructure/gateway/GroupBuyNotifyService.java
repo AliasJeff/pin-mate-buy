@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 
 /**
- * @description 拼团回调服务
+ * @description 拼单回调服务
  */
 @Slf4j
 @Service
@@ -35,7 +35,7 @@ public class GroupBuyNotifyService {
             // 3. 返回结果
             return response.body().string();
         } catch (Exception e) {
-            log.error("拼团回调 HTTP 接口服务异常 {}", apiUrl, e);
+            log.error("拼单回调 HTTP 接口服务异常 {}", apiUrl, e);
             throw new AppException(ResponseCode.HTTP_EXCEPTION);
         }
     }

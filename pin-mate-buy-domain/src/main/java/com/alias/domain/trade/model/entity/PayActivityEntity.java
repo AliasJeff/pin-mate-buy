@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 import java.util.Date;
 
 /**
- * @description 拼团，支付活动实体对象
+ * @description 拼单，支付活动实体对象
  */
 @Data
 @Builder
@@ -29,11 +29,11 @@ public class PayActivityEntity {
      */
     private String activityName;
     /**
-     * 拼团开始时间
+     * 拼单开始时间
      */
     private Date startTime;
     /**
-     * 拼团结束时间
+     * 拼单结束时间
      */
     private Date endTime;
     /**
@@ -41,7 +41,7 @@ public class PayActivityEntity {
      */
     private Integer targetCount;
     /**
-     * 拼团时长（分钟）
+     * 拼单时长（分钟）
      */
     private Integer validTime;
 

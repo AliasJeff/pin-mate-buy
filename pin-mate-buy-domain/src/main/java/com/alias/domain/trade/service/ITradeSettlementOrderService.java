@@ -4,7 +4,7 @@ import com.alias.domain.trade.model.entity.TradePaySettlementEntity;
 import com.alias.domain.trade.model.entity.TradePaySuccessEntity;
 
 /**
- * 拼团交易结算服务接口
+ * 拼单交易结算服务接口
  */
 public interface ITradeSettlementOrderService {
 

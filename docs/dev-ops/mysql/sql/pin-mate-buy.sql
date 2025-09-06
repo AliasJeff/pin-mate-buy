@@ -32,10 +32,10 @@ CREATE TABLE `group_buy_activity` (
   `activity_id` bigint(8) NOT NULL COMMENT '活动ID',
   `activity_name` varchar(128) NOT NULL COMMENT '活动名称',
   `discount_id` varchar(8) NOT NULL COMMENT '折扣ID',
-  `group_type` tinyint(1) NOT NULL DEFAULT '0' COMMENT '拼团方式（0自动成团、1达成目标拼团）',
-  `take_limit_count` int(4) NOT NULL DEFAULT '1' COMMENT '拼团次数限制',
-  `target` int(5) NOT NULL DEFAULT '1' COMMENT '拼团目标',
-  `valid_time` int(4) NOT NULL DEFAULT '15' COMMENT '拼团时长（分钟）',
+  `group_type` tinyint(1) NOT NULL DEFAULT '0' COMMENT '拼单方式（0自动成团、1达成目标拼单）',
+  `take_limit_count` int(4) NOT NULL DEFAULT '1' COMMENT '拼单次数限制',
+  `target` int(5) NOT NULL DEFAULT '1' COMMENT '拼单目标',
+  `valid_time` int(4) NOT NULL DEFAULT '15' COMMENT '拼单时长（分钟）',
   `status` tinyint(1) NOT NULL DEFAULT '0' COMMENT '活动状态（0创建、1生效、2过期、3废弃）',
   `start_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '活动开始时间',
   `end_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '活动结束时间',
@@ -45,7 +45,7 @@ CREATE TABLE `group_buy_activity` (
   `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   PRIMARY KEY (`id`),
   UNIQUE KEY `uq_activity_id` (`activity_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='拼团活动';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='拼单活动';
 
 LOCK TABLES `group_buy_activity` WRITE;
 /*!40000 ALTER TABLE `group_buy_activity` DISABLE KEYS */;
@@ -77,8 +77,8 @@ CREATE TABLE `group_buy_order` (
     `complete_count` int(5) NOT NULL COMMENT '完成数量',
     `lock_count` int(5) NOT NULL COMMENT '锁单数量',
     `status` tinyint(1) NOT NULL DEFAULT '0' COMMENT '状态（0-拼单中、1-完成、2-失败、3-完成-含退单）',
-    `valid_start_time` datetime NOT NULL COMMENT '拼团开始时间',
-    `valid_end_time` datetime NOT NULL COMMENT '拼团结束时间',
+    `valid_start_time` datetime NOT NULL COMMENT '拼单开始时间',
+    `valid_end_time` datetime NOT NULL COMMENT '拼单结束时间',
     `notify_type` varchar(8) NOT NULL DEFAULT 'HTTP' COMMENT '回调类型（HTTP、MQ）',
     `notify_url` varchar(512) DEFAULT NULL COMMENT '回调地址（HTTP 回调不可为空）',
     `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',

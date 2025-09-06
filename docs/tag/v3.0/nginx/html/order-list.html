@@ -57,6 +57,47 @@
         <p>加载中...</p>
     </div>
 
+    <script>
+        // 倒计时逻辑（从index.js复制）
+        class Countdown {
+            constructor(element, initialTime) {
+                this.element = element;
+                this.remaining = this.parseTime(initialTime);
+                this.timer = null;
+                this.start();
+            }
+
+            parseTime(timeString) {
+                const [hours, minutes, seconds] = timeString.split(':').map(Number);
+                return hours * 3600 + minutes * 60 + seconds;
+            }
+
+            formatTime(seconds) {
+                const h = Math.floor(seconds / 3600).toString().padStart(2, '0');
+                const m = Math.floor((seconds % 3600) / 60).toString().padStart(2, '0');
+                const s = (seconds % 60).toString().padStart(2, '0');
+                return `${h}:${m}:${s}`;
+            }
+
+            update() {
+                this.remaining--;
+                if (this.remaining <= 0) {
+                    this.element.textContent = '00:00:00';
+                    this.stop();
+                    return;
+                }
+                this.element.textContent = this.formatTime(this.remaining);
+            }
+
+            start() {
+                this.timer = setInterval(() => this.update(), 1000);
+            }
+
+            stop() {
+                clearInterval(this.timer);
+            }
+        }
+    </script>
     <script src="js/order-list.js"></script>
 </body>
 </html>

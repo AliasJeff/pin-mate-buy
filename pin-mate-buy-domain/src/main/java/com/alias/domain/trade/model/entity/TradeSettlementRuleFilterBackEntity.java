@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 import java.util.Date;
 
 /**
- * @description 拼团交易结算规则反馈
+ * @description 拼单交易结算规则反馈
  */
 @Data
 @Builder
@@ -43,11 +43,11 @@ public class TradeSettlementRuleFilterBackEntity {
      */
     private GroupBuyOrderEnumVO status;
     /**
-     * 拼团开始时间 - 参与拼团时间
+     * 拼单开始时间 - 参与拼单时间
      */
     private Date validStartTime;
     /**
-     * 拼团结束时间 - 拼团有效时长
+     * 拼单结束时间 - 拼单有效时长
      */
     private Date validEndTime;
     /**

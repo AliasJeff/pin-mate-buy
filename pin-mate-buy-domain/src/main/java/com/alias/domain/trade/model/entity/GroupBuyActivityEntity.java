@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 import java.util.Date;
 
 /**
- * @description 拼团活动实体对象
+ * @description 拼单活动实体对象
  */
 @Data
 @Builder
@@ -30,19 +30,19 @@ public class GroupBuyActivityEntity {
      */
     private String discountId;
     /**
-     * 拼团方式（0自动成团、1达成目标拼团）
+     * 拼单方式（0自动成团、1达成目标拼单）
      */
     private Integer groupType;
     /**
-     * 拼团次数限制
+     * 拼单次数限制
      */
     private Integer takeLimitCount;
     /**
-     * 拼团目标
+     * 拼单目标
      */
     private Integer target;
     /**
-     * 拼团时长（分钟）
+     * 拼单时长（分钟）
      */
     private Integer validTime;
     /**
