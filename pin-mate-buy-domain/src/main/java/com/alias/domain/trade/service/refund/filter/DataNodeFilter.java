@@ -28,6 +28,9 @@ public class DataNodeFilter implements ILogicHandler<TradeRefundCommandEntity, T
 
         // 1. 查询外部交易单，组队id、orderId、拼单状态
         MarketPayOrderEntity marketPayOrderEntity = repository.queryMarketPayOrderEntityByOutTradeNo(tradeRefundCommandEntity.getUserId(), tradeRefundCommandEntity.getOutTradeNo());
+        if (marketPayOrderEntity == null) {
+            throw new RuntimeException("订单不存在");
+        }
         String teamId = marketPayOrderEntity.getTeamId();
 
         // 2. 查询拼单状态
