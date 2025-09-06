@@ -61,6 +61,7 @@
         where user_id = #{userId}
           and activity_id = #{activityId}
           and create_time >= DATE_SUB(NOW(), INTERVAL 1 DAY)
+          and status in (0, 1)
     </select>
 
     <update id="updateOrderStatus2COMPLETE" parameterType="com.alias.infrastructure.dao.po.GroupBuyOrderList">

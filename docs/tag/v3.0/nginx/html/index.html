@@ -217,18 +217,30 @@
                 } else {
                     teamList.forEach(team => {
                         const remaining = team.targetCount - team.lockCount;
+                        const currentUserId = AppUtils.getCurrentUserId();
+                        const isCurrentUser = team.userId === currentUserId;
+                        
+                        // 构建用户信息显示，如果是当前用户则添加"我"标签
+                        const userDisplay = isCurrentUser 
+                            ? `${obfuscateUserId(team.userId)} <span class="me-tag">我</span>`
+                            : obfuscateUserId(team.userId);
+                        
+                        // 构建"参与拼单"按钮，只有非当前用户才显示
+                        const joinButton = isCurrentUser 
+                            ? '' 
+                            : '<button class="group-btn" data-price="' + goods.payPrice.toFixed(0) + '">参与拼单</button>';
 
                         groupList.innerHTML += `
                     <div class="group-item">
                         <div>
-                            <div class="user-info" data-teamId="${team.teamId}" data-activityId="${team.activityId}">${obfuscateUserId(team.userId)}</div>
+                            <div class="user-info" data-teamId="${team.teamId}" data-activityId="${team.activityId}">${userDisplay}</div>
                             <div class="group-status">
                                 <span>组队仅剩${remaining}人，拼单即将结束</span>
                                 <span class="countdown">${team.validTimeCountdown}</span>
                             </div>
                         </div>
                         <div class="right">
-                            <button class="group-btn" data-price="${goods.payPrice.toFixed(0)}">参与拼单</button>
+                            ${joinButton}
                         </div>
                     </div>
                 `;
@@ -243,7 +255,7 @@
                 groupBuyBtn.textContent = `拼单购买(￥${goods.payPrice.toFixed(0)})`;
                 groupBuyBtn.dataset.price = goods.payPrice;
 
-                        // 绑定支付事件[拼单购买]
+                // 绑定支付事件[拼单购买]
                 document.querySelectorAll('.group-btn, .group-buy').forEach(btn => {
                     btn.addEventListener('click', function () {
                         const button = this;

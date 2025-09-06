@@ -128,6 +128,11 @@ class OrderListManager {
         const orderDiv = document.createElement('div');
         orderDiv.className = 'order-item';
         
+        // 保存表单数据到 DOM 元素的 data attribute
+        if (order.payUrl) {
+            orderDiv.setAttribute('data-pay-form', order.payUrl);
+        }
+        
         // 构建倒计时HTML
         const countdownHtml = order.validTimeCountdown && order.status === 'PAY_WAIT' 
             ? `<div class="order-countdown"><span class="countdown">${order.validTimeCountdown}</span></div>` 
@@ -311,7 +316,28 @@ class OrderListManager {
 
     // 处理支付
     async processPay(orderId, amount) {
-        this.showPaymentConfirm(amount, orderId);
+        // 找到对应的订单元素，获取保存的表单数据
+        const orderElements = document.querySelectorAll('.order-item');
+        let payForm = null;
+        
+        for (let orderElement of orderElements) {
+            const orderIdElement = orderElement.querySelector('.order-id-text');
+            if (orderIdElement && orderIdElement.textContent === orderId) {
+                payForm = orderElement.getAttribute('data-pay-form');
+                break;
+            }
+        }
+        
+        if (payForm) {
+            // 先清除之前的表单
+            document.querySelectorAll('form').forEach(form => form.remove());
+            // 插入表单到DOM中
+            document.body.insertAdjacentHTML('beforeend', payForm);
+            // 显示支付确认弹窗
+            this.showPaymentConfirm(amount, orderId);
+        } else {
+            AppUtils.showToast('未找到支付表单，请刷新页面重试', 'error');
+        }
     }
 
     // 支付确认弹窗（参考index.html实现）
@@ -319,37 +345,17 @@ class OrderListManager {
         // 创建遮罩层
         const overlay = document.createElement('div');
         overlay.className = 'payment-overlay';
-        overlay.style.cssText = `
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-        `;
 
         // 创建弹窗内容
         const modal = document.createElement('div');
         modal.className = 'payment-modal';
-        modal.style.cssText = `
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            max-width: 400px;
-            width: 90%;
-            text-align: center;
-        `;
         modal.innerHTML = `
         <h3>支付确认</h3>
         <p>订单号：${orderId}</p>
         <p>商品金额：￥${price}</p>
         <p>买家账号：<span class="buyer-account">
             <span class="account-text">bcywss3672@sandbox.com</span>
-            <button class="copy-btn" data-copy="bcywss3672@sandbox.com" title="复制账号" style="margin-left: 8px; border: none; background: none; cursor: pointer;">
+            <button class="copy-btn" data-copy="bcywss3672@sandbox.com" title="复制账号">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
                     <path d="m5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
@@ -359,15 +365,16 @@ class OrderListManager {
         <p>登录密码：111111</p>
         <p>支付密码：111111</p>
         <p>点击"确认支付"后将跳转至支付页面，支付完成后会自动返回平台。</p>
-        <div class="modal-buttons" style="margin-top: 20px;">
-            <button class="confirm-btn" style="background: #007bff; color: white; border: none; padding: 10px 20px; margin: 0 10px; border-radius: 4px; cursor: pointer;">确认支付</button>
-            <button class="cancel-btn" style="background: #6c757d; color: white; border: none; padding: 10px 20px; margin: 0 10px; border-radius: 4px; cursor: pointer;">取消支付</button>
+        <div class="modal-buttons">
+            <button class="confirm-btn">确认支付</button>
+            <button class="cancel-btn">取消支付</button>
         </div>
     `;
 
         // 确认支付处理
         modal.querySelector('.confirm-btn').addEventListener('click', () => {
-            this.processOrderPayment(orderId);
+            const form = document.querySelector('form');
+            if (form) form.submit();
             overlay.remove();
         });
 
@@ -398,42 +405,6 @@ class OrderListManager {
         document.body.appendChild(overlay);
     }
 
-    // 处理订单支付（调用支付API）
-    async processOrderPayment(orderId) {
-        this.showLoading();
-
-        try {
-            const requestData = {
-                userId: this.userId,
-                orderId: orderId
-            };
-
-            const response = await fetch(AppConfig.sPayMallUrl + '/api/v1/alipay/get_pay_order', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(requestData)
-            });
-
-            const result = await response.json();
-
-            if (result.code === '0000' && result.data) {
-                document.querySelectorAll('form').forEach(form => form.remove());
-                document.body.insertAdjacentHTML('beforeend', result.data);
-                const form = document.querySelector('form');
-                if (form) form.submit();
-            } else {
-                const errorMessage = result.info || result.message || '获取支付信息失败';
-                AppUtils.showToast(errorMessage, 'error');
-            }
-        } catch (error) {
-            console.error('处理支付出错:', error);
-            AppUtils.showToast('网络错误，请稍后重试', 'error');
-        } finally {
-            this.hideLoading();
-        }
-    }
 
     // 复制成功提示（参考index.html）
     showCopySuccess(button) {
